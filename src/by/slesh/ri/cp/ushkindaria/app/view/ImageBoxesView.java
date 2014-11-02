@@ -31,8 +31,8 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
         mSourceImageBox.setHorizontalAlignment(JLabel.CENTER);
         mTargetImageBox.setHorizontalAlignment(JLabel.CENTER);
 
-        mSourceImageBox.setBorder(BorderFactory.createLineBorder(Color.RED));
-        mTargetImageBox.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+//        mSourceImageBox.setBorder(BorderFactory.createLineBorder(Color.RED));
+//        mTargetImageBox.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 
         JScrollPane sourceScrollPane = new JScrollPane(mSourceImageBox);
         JScrollPane targetScrollPane = new JScrollPane(mTargetImageBox);

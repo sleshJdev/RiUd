@@ -23,7 +23,7 @@ public class Contour {
     public BufferedImage sub(BufferedImage source) {
         return source.getSubimage(xMin, yMin, xMax - xMin, yMax - yMin);
     }
-
+    
     public void drawOnImage(BufferedImage bitmap) {
         int size = path.size();
         if (size < 50) return;
