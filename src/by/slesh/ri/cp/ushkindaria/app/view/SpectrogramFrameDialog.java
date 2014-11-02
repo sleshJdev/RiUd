@@ -1,4 +1,4 @@
-package by.slesh.ri.cp.ushkindaria.view;
+package by.slesh.ri.cp.ushkindaria.app.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
