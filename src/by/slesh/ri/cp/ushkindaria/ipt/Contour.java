@@ -21,9 +21,13 @@ public class Contour {
     private int yMax;
 
     public BufferedImage sub(BufferedImage source) {
-        return source.getSubimage(xMin, yMin, xMax - xMin, yMax - yMin);
+        int w = xMax - xMin;
+        int h = yMax - yMin;
+        BufferedImage result = source.getSubimage(xMin, yMin, w, h);
+        int[] rgb = result.getRGB(0, 0, w, h, null, w, w);
+        return AbstractTool.rgbToImage(rgb, w, h);
     }
-    
+
     public void drawOnImage(BufferedImage bitmap) {
         int size = path.size();
         if (size < 50) return;

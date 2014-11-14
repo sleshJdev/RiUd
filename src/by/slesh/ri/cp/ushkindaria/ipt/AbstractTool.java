@@ -5,16 +5,28 @@ import java.awt.image.BufferedImage;
 
 public class AbstractTool {
 
-    protected static final int IMAGE_TYPE = BufferedImage.TYPE_4BYTE_ABGR;
+	public static final int	IMAGE_TYPE	= BufferedImage.TYPE_4BYTE_ABGR;
 
-    public static final int _0 = Color.WHITE.getRGB();
-    public static final int _1 = Color.BLACK.getRGB();
+	public static final int		_0			= Color.WHITE.getRGB();
+	public static final int		_1			= Color.BLACK.getRGB();
+	public static final int 	_05         = Color.GRAY.getRGB();
 
-    public BufferedImage rgbToImage(int[] rgb, int w, int h) {
-        BufferedImage target = new BufferedImage(w, h, IMAGE_TYPE);
-        target.setRGB(0, 0, w, h, rgb, w, w);
-        return target;
-    }
+	public static BufferedImage rgbToImage(int[] rgb, int w, int h) {
+
+		BufferedImage target = new BufferedImage(w, h, IMAGE_TYPE);
+		target.setRGB(0, 0, w, h, rgb, w, w);
+		return target;
+	}
+
+	public static int readBrightness(int rgb) {
+
+		return (rgb >> 0) & 0xff;
+	}
+
+	public static int getRgbFromValue(int value) {
+
+		return brightnessToRgb(255, value, value, value);
+	}
 
     public static int[] countBrightnessRepeats(BufferedImage source) {
         int[] rgb = source.getRGB(0, 0, source.getWidth(), source.getHeight(), null, source.getWidth(),

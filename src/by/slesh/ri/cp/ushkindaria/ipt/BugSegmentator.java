@@ -11,7 +11,7 @@ public class BugSegmentator extends AbstractTool {
         Up, Right, Down, Left
     }
 
-    public void setmFrom(Point from) {
+    public void setFrom(Point from) {
         mFrom = from;
     }
 
