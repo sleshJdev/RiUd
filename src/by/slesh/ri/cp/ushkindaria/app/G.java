@@ -9,6 +9,6 @@ package by.slesh.ri.cp.ushkindaria.app;
  *
  */
 public class G {
-	public static int INIT_BIN_PERCENT = 10;
+	public static int INIT_BIN_PERCENT = 8;
 	public static int INIT_SEGMENT_THRESHOLD = 250;
 }
