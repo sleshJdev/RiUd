@@ -12,9 +12,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JTextField;
 
 import by.slesh.ri.cp.ushkindaria.app.G;
-import by.slesh.ri.cp.ushkindaria.app.view.service.ControlPanelViewInterface;
+import by.slesh.ri.cp.ushkindaria.app.view.service.ControlViewInterface;
 
-public class ControlPanelView extends JPanel implements ControlPanelViewInterface {
+public class ControlPanelView extends JPanel implements ControlViewInterface {
 
 	private static final long	serialVersionUID	= -2454572918534173516L;
 

@@ -1,18 +1,11 @@
 package by.slesh.ri.cp.ushkindaria.app;
 
+import by.slesh.ri.cp.ushkindaria.app.view.MainView;
+
 public class App {
 
     public static void main(String[] args) {
-        int a = 1;
-        int b = 5;
-        changer(a, b);
-        System.out.println("a = " + a + " b = " + b);
+	MainView mainView = new MainView();
+	mainView.setVisible(true);
     }
-
-    static void changer(Integer a, Integer b) {
-        ++a;
-        ++b;
-        System.out.println("a = " + a + " b = " + b);
-    }
-
 }

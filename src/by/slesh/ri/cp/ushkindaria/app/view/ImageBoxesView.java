@@ -16,79 +16,79 @@ import by.slesh.ri.cp.ushkindaria.app.view.service.ImageBoxesViewInterface;
 
 public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 
-	private static final long	serialVersionUID	= -3893100366850568189L;
-	private JLabel				mSourceImageBox;
-	private JLabel				mTargetImageBox;
+    private static final long serialVersionUID = -3893100366850568189L;
+    private JLabel            mSourceImageBox;
+    private JLabel            mTargetImageBox;
 
-	public ImageBoxesView() {
+    public ImageBoxesView() {
 
-		setLayout(new GridLayout(1, 2, 5, 5));
-		mSourceImageBox = new JLabel();
-		mTargetImageBox = new JLabel();
+	setLayout(new GridLayout(1, 2, 5, 5));
+	mSourceImageBox = new JLabel();
+	mTargetImageBox = new JLabel();
 
-		mSourceImageBox.setHorizontalAlignment(JLabel.CENTER);
-		mTargetImageBox.setHorizontalAlignment(JLabel.CENTER);
+	mSourceImageBox.setHorizontalAlignment(JLabel.CENTER);
+	mTargetImageBox.setHorizontalAlignment(JLabel.CENTER);
 
-		JScrollPane sourceScrollPane = new JScrollPane(mSourceImageBox);
-		JScrollPane targetScrollPane = new JScrollPane(mTargetImageBox);
+	JScrollPane sourceScrollPane = new JScrollPane(mSourceImageBox);
+	JScrollPane targetScrollPane = new JScrollPane(mTargetImageBox);
 
-		targetScrollPane.getViewport().addChangeListener(new ChangeListener() {
+	targetScrollPane.getViewport().addChangeListener(new ChangeListener() {
 
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
+	    @Override
+	    public void stateChanged(ChangeEvent arg0) {
 
-				int x = targetScrollPane.getHorizontalScrollBar().getValue();
-				int y = targetScrollPane.getVerticalScrollBar().getValue();
-				sourceScrollPane.getHorizontalScrollBar().setValue(x);
-				sourceScrollPane.getVerticalScrollBar().setValue(y);
-			}
-		});
+		int x = targetScrollPane.getHorizontalScrollBar().getValue();
+		int y = targetScrollPane.getVerticalScrollBar().getValue();
+		sourceScrollPane.getHorizontalScrollBar().setValue(x);
+		sourceScrollPane.getVerticalScrollBar().setValue(y);
+	    }
+	});
 
-		sourceScrollPane.getViewport().addChangeListener(new ChangeListener() {
+	sourceScrollPane.getViewport().addChangeListener(new ChangeListener() {
 
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
+	    @Override
+	    public void stateChanged(ChangeEvent arg0) {
 
-				int x = sourceScrollPane.getHorizontalScrollBar().getValue();
-				int y = sourceScrollPane.getVerticalScrollBar().getValue();
-				targetScrollPane.getHorizontalScrollBar().setValue(x);
-				targetScrollPane.getVerticalScrollBar().setValue(y);
-			}
-		});
+		int x = sourceScrollPane.getHorizontalScrollBar().getValue();
+		int y = sourceScrollPane.getVerticalScrollBar().getValue();
+		targetScrollPane.getHorizontalScrollBar().setValue(x);
+		targetScrollPane.getVerticalScrollBar().setValue(y);
+	    }
+	});
 
-		add(sourceScrollPane);
-		add(targetScrollPane);
-	}
+	add(sourceScrollPane);
+	add(targetScrollPane);
+    }
 
-	@Override
-	public void getLocationOnImage(Point currentLocation) {
+    @Override
+    public void getLocationOnImage(Point currentLocation) {
 
-		int h = mTargetImageBox.getHeight();
-		int w = mTargetImageBox.getWidth();
-		int ih = mTargetImageBox.getIcon().getIconHeight();
-		int iw = mTargetImageBox.getIcon().getIconWidth();
+	int h = mTargetImageBox.getHeight();
+	int w = mTargetImageBox.getWidth();
+	int ih = mTargetImageBox.getIcon().getIconHeight();
+	int iw = mTargetImageBox.getIcon().getIconWidth();
 
-		int dx = (iw - w) / 2;
-		int dy = (ih - h) / 2;
+	int dx = (iw - w) / 2;
+	int dy = (ih - h) / 2;
 
-		currentLocation.translate(dx, dy);
-	}
+	currentLocation.translate(dx, dy);
+    }
 
-	@Override
-	public void addTargetImageBoxClickListener(MouseListener l) {
+    @Override
+    public void addTargetImageBoxClickListener(MouseListener l) {
 
-		mTargetImageBox.addMouseListener(l);
-	}
+	mTargetImageBox.addMouseListener(l);
+    }
 
-	@Override
-	public void updateSource(BufferedImage source) {
+    @Override
+    public void updateSource(BufferedImage source) {
 
-		mSourceImageBox.setIcon(new ImageIcon(source));
-	}
+	mSourceImageBox.setIcon(new ImageIcon(source));
+    }
 
-	@Override
-	public void updateTarget(BufferedImage target) {
+    @Override
+    public void updateTarget(BufferedImage target) {
 
-		mTargetImageBox.setIcon(new ImageIcon(target));
-	}
+	mTargetImageBox.setIcon(new ImageIcon(target));
+    }
 }
