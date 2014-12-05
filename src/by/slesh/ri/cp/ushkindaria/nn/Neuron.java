@@ -3,8 +3,8 @@ package by.slesh.ri.cp.ushkindaria.nn;
 import java.util.Random;
 
 public class Neuron {
-    private int[]            mWeights;
-    private static final int LIMIT = 50;
+    private int[] mWeights;
+    private int mLimit = 10;
 
     Neuron(int m) {
 	mWeights = new int[m];
@@ -36,7 +36,7 @@ public class Neuron {
     }
 
     private int activator(int nec) {
-	return nec >= LIMIT ? 1 : 0;
+	return nec >= mLimit ? 1 : 0;
     }
 
     public int[] getWeights() {

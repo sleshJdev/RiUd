@@ -1,5 +1,6 @@
 package by.slesh.ri.cp.ushkindaria.app.view;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -16,200 +17,232 @@ import by.slesh.ri.cp.ushkindaria.app.view.service.ControlViewInterface;
 
 public class ControlPanelView extends JPanel implements ControlViewInterface {
 
-	private static final long	serialVersionUID	= -2454572918534173516L;
+    private static final long serialVersionUID = -2454572918534173516L;
 
-	private JTextField			percentValueTextField;
-	private JScrollBar			percentScrollBar;
-	private JButton				binarizationButton;
-	private JTextField			segmentThresholdValueTextField;
-	private JScrollBar			segmentThresholScrollBar;
-	private JButton				histogramSegmentButton;
-	private JButton				skeletonizationButton;
-	private JButton				openFileButton;
-	private JButton				bugSegmentButton;
-	private JButton				resetButton;
-	private JButton				trimButton;
-	private JButton				extractButton;
-	private JButton				dilateButton;
-	private JButton				erodeButton;
-	private JButton				neuralNetworkUseButton;
+    private JTextField mPercentValueTextField;
+    private JScrollBar mPercentScrollBar;
+    private JButton mBinarizationButton;
+    private JTextField mSegmentThresholdValueTextField;
+    private JScrollBar mSegmentThresholScrollBar;
+    private JButton mHistogramSegmentButton;
+    private JButton mSkeletonizationButton;
+    private JButton mOpenFileButton;
+    private JButton mBugSegmentButton;
+    private JButton mResetButton;
+    private JButton mTrimButton;
+    private JButton mExtractAreaInterestButton;
+    private JButton mDilateButton;
+    private JButton mErodeButton;
+    private JButton mNeuralNetworkUseButton;
+    private JButton mExtractGroupNumberButton;
+    private JButton mSegmentGroupNumberButton;
+    private JButton mRecognizeNumberButton;
 
-	public ControlPanelView() {
+    public ControlPanelView() {
 
-		openFileButton = new JButton("Загрузить изображение");
-		openFileButton.setActionCommand(ACTION_FILE_OPEN);
+	mOpenFileButton = new JButton("Загрузить изображение");
+	mOpenFileButton.setActionCommand(ACTION_FILE_OPEN);
 
-		skeletonizationButton = new JButton("Алгорит Зонга-Суня");
-		skeletonizationButton.setActionCommand(ACTION_SKELETONIZATION);
-		skeletonizationButton.setEnabled(false);
+	mSkeletonizationButton = new JButton("Алгорит Зонга-Суня");
+	mSkeletonizationButton.setActionCommand(ACTION_SKELETONIZATION);
+	mSkeletonizationButton.setEnabled(false);
 
-		bugSegmentButton = new JButton("Алгоритм жука");
-		bugSegmentButton.setActionCommand(ACTION_SEGMENT_BUG);
-		bugSegmentButton.setEnabled(false);
+	mBugSegmentButton = new JButton("Алгоритм жука");
+	mBugSegmentButton.setActionCommand(ACTION_SEGMENT_BUG);
+	mBugSegmentButton.setEnabled(false);
 
-		/* Binarization controls */
-		binarizationButton = createButton("Бинаризовать", ACTION_BINARIZATION, false);
-		percentScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, G.INIT_BIN_PERCENT, 1, 0, 100);
-		percentScrollBar.setEnabled(false);
-		percentValueTextField = new JTextField("Процент для бинаризации = " + G.INIT_BIN_PERCENT);
-		percentValueTextField.setHorizontalAlignment(JTextField.CENTER);
-		percentValueTextField.setEditable(false);
-		/* =========== */
+	/* Binarization controls */
+	mBinarizationButton = createButton("Бинаризовать", ACTION_BINARIZATION,
+	        false);
+	mPercentScrollBar = new JScrollBar(JScrollBar.HORIZONTAL,
+	        G.INIT_BIN_PERCENT, 1, 0, 100);
+	mPercentScrollBar.setEnabled(false);
+	mPercentValueTextField = new JTextField("Процент для бинаризации = "
+	        + G.INIT_BIN_PERCENT);
+	mPercentValueTextField.setHorizontalAlignment(JTextField.CENTER);
+	mPercentValueTextField.setEditable(false);
+	/* =========== */
 
-		/* Segment controls */
-		histogramSegmentButton = createButton("Сегментировать", ACTION_SEGMENT_HISTOGRAM, false);
-		segmentThresholScrollBar = new JScrollBar(JScrollBar.HORIZONTAL, G.INIT_SEGMENT_THRESHOLD, 1, 0, 500);
-		segmentThresholScrollBar.setEnabled(false);
-		segmentThresholdValueTextField = new JTextField("Порог сегментации = " + G.INIT_SEGMENT_THRESHOLD);
-		segmentThresholdValueTextField.setHorizontalAlignment(JTextField.CENTER);
-		segmentThresholdValueTextField.setEditable(false);
-		/* =========== */
+	/* Segment controls */
+	mHistogramSegmentButton = createButton("Выделить края",
+	        ACTION_SEGMENT_HISTOGRAM, false);
+	mSegmentThresholScrollBar = new JScrollBar(JScrollBar.HORIZONTAL,
+	        G.INIT_SEGMENT_THRESHOLD, 1, 0, 500);
+	mSegmentThresholScrollBar.setEnabled(false);
+	mSegmentThresholdValueTextField = new JTextField("Порог сегментации = "
+	        + G.INIT_SEGMENT_THRESHOLD);
+	mSegmentThresholdValueTextField
+	        .setHorizontalAlignment(JTextField.CENTER);
+	mSegmentThresholdValueTextField.setEditable(false);
+	/* =========== */
 
-		resetButton = createButton("Сбросить", ACTION_RESET, false);
-		trimButton = createButton("Обрезать края(40 пикселей)", ACTION_TRIM, false);
-		extractButton = createButton("Выделить интересующий участок", ACTION_EXTRACT, false);
-		dilateButton = createButton("Расширение", ACTION_DILATE, false);
-		erodeButton = createButton("Эрозия", ACTION_ERODE, false);
-		neuralNetworkUseButton = createButton("Использовать нейросеть", ACTION_NEURALNETWORK, false);
-		
-		setLayout(new GridLayout(6, 3));
+	mResetButton = createButton("Сбросить", ACTION_RESET, false);
 
-		add(openFileButton);
-		add(skeletonizationButton);
-		add(bugSegmentButton);
+	mTrimButton = createButton("Обрезать края(40 пикселей)", ACTION_TRIM,
+	        false);
 
-		add(binarizationButton);
-		add(percentScrollBar);
-		add(percentValueTextField);
+	mExtractAreaInterestButton = createButton(
+	        "Выделить интересующий участок", ACTION_EXTRACT_AREA_INTEREST,
+	        false);
 
-		add(trimButton);
-		add(erodeButton);
-		add(dilateButton);
-		
-		add(histogramSegmentButton);
-		add(segmentThresholScrollBar);
-		add(segmentThresholdValueTextField);
+	mDilateButton = createButton("Расширение", ACTION_DILATE, false);
 
-		add(resetButton);
-		add(neuralNetworkUseButton);
-		add(extractButton);
+	mErodeButton = createButton("Эрозия", ACTION_ERODE, false);
+
+	mNeuralNetworkUseButton = createButton("Использовать нейросеть",
+	        ACTION_NEURALNETWORK, false);
+
+	mExtractGroupNumberButton = createButton("Найти номер группы",
+	        ACTION_EXTRACT_GROUP_NUMBER, false);
+
+	mSegmentGroupNumberButton = createButton("Сегментировать цифры",
+	        ACTION_SEGMENT_GROUP_NUMBER, false);
+
+	mRecognizeNumberButton = createButton("РАСПОЗНАТЬ",
+	        ACTION_RECOGNIZE_NUMBER, false);
+	mRecognizeNumberButton.setBackground(Color.GREEN);
+
+	setLayout(new GridLayout(20, 1));
+
+	add(mOpenFileButton);
+	add(mResetButton);
+	add(mSkeletonizationButton);
+	add(mBugSegmentButton);
+	add(new JPanel());
+	add(mBinarizationButton);
+	add(mPercentScrollBar);
+	add(mPercentValueTextField);
+
+	add(mTrimButton);
+	add(mErodeButton);
+	add(mDilateButton);
+
+	add(mHistogramSegmentButton);
+	add(mSegmentThresholScrollBar);
+	add(mSegmentThresholdValueTextField);
+
+	add(mNeuralNetworkUseButton);
+	add(mExtractAreaInterestButton);
+	add(mExtractGroupNumberButton);
+	add(mSegmentGroupNumberButton);
+	add(mRecognizeNumberButton);
+    }
+
+    private JButton createButton(String caption, String actionCommand,
+	    boolean isEnable) {
+
+	JButton button = new JButton(caption);
+	button.setActionCommand(actionCommand);
+	button.setEnabled(isEnable);
+	return button;
+    }
+
+    public void enableComponents(Container container, boolean enable) {
+
+	Component[] components = container.getComponents();
+	for (Component component : components) {
+	    component.setEnabled(enable);
+	    if (component instanceof Container) {
+		enableComponents((Container) component, enable);
+	    }
 	}
+    }
 
-	private JButton createButton(String caption, String actionCommand, boolean isEnable) {
+    @Override
+    public void updatePercentValue(int value) {
 
-		JButton button = new JButton(caption);
-		button.setActionCommand(actionCommand);
-		button.setEnabled(isEnable);
-		return button;
-	}
+	String text = "Процент для бинаризации = " + value;
+	mPercentValueTextField.setText(text);
+    }
 
-	public void enableComponents(Container container, boolean enable) {
+    @Override
+    public void updateSegmentThresholdValue(int value) {
+	String text = "Порог сегментации = " + value;
+	mSegmentThresholdValueTextField.setText(text);
+    }
 
-		Component[] components = container.getComponents();
-		for (Component component : components) {
-			component.setEnabled(enable);
-			if (component instanceof Container) {
-				enableComponents((Container) component, enable);
-			}
-		}
-	}
+    @Override
+    public void enableControls() {
+	enableComponents(this, true);
+    }
 
-	@Override
-	public void updatePercentValue(int value) {
+    @Override
+    public void addOpenFileClickListener(ActionListener l) {
+	mOpenFileButton.addActionListener(l);
+    }
 
-		String text = "Процент для бинаризации = " + value;
-		percentValueTextField.setText(text);
-	}
+    @Override
+    public void addBinarizateClickListener(ActionListener l) {
+	mBinarizationButton.addActionListener(l);
+    }
 
-	@Override
-	public void updateSegmentThresholdValue(int value) {
+    @Override
+    public void addSkeletonizationClickListener(ActionListener l) {
+	mSkeletonizationButton.addActionListener(l);
+    }
 
-		String text = "Порог сегментации = " + value;
-		segmentThresholdValueTextField.setText(text);
-	}
+    @Override
+    public void addBinPercentChangeValueListener(AdjustmentListener l) {
+	mPercentScrollBar.addAdjustmentListener(l);
+    }
 
-	@Override
-	public void enableControls() {
+    @Override
+    public void addSegmentThresholdChangeValueListener(AdjustmentListener l) {
+	mSegmentThresholScrollBar.addAdjustmentListener(l);
+    }
 
-		enableComponents(this, true);
-	}
+    @Override
+    public void addHistogramSegmentClickListener(ActionListener l) {
+	mHistogramSegmentButton.addActionListener(l);
+    }
 
-	@Override
-	public void addOpenFileClickListener(ActionListener l) {
+    @Override
+    public void addBugSegmentClickListener(ActionListener l) {
+	mBugSegmentButton.addActionListener(l);
+    }
 
-		openFileButton.addActionListener(l);
-	}
+    @Override
+    public void addResetClickListener(ActionListener l) {
+	mResetButton.addActionListener(l);
+    }
 
-	@Override
-	public void addBinarizateClickListener(ActionListener l) {
+    @Override
+    public void addErodeClickListener(ActionListener l) {
+	mErodeButton.addActionListener(l);
+    }
 
-		binarizationButton.addActionListener(l);
-	}
+    @Override
+    public void addDilateClickListener(ActionListener l) {
+	mDilateButton.addActionListener(l);
+    }
 
-	@Override
-	public void addSkeletonizationClickListener(ActionListener l) {
+    @Override
+    public void addExtractAreaInterestClickListener(ActionListener l) {
+	mExtractAreaInterestButton.addActionListener(l);
+    }
 
-		skeletonizationButton.addActionListener(l);
-	}
+    @Override
+    public void addTrimClickListener(ActionListener l) {
+	mTrimButton.addActionListener(l);
+    }
 
-	@Override
-	public void addBinPercentChangeValueListener(AdjustmentListener l) {
+    @Override
+    public void addNeuralNetworkClickListener(ActionListener l) {
+	mNeuralNetworkUseButton.addActionListener(l);
+    }
 
-		percentScrollBar.addAdjustmentListener(l);
-	}
+    @Override
+    public void addExtractGroupNumberClickListener(ActionListener l) {
+	mExtractGroupNumberButton.addActionListener(l);
+    }
 
-	@Override
-	public void addSegmentThresholdChangeValueListener(AdjustmentListener l) {
+    @Override
+    public void addSegmentGroupNumberClickListener(ActionListener l) {
+	mSegmentGroupNumberButton.addActionListener(l);
+    }
 
-		segmentThresholScrollBar.addAdjustmentListener(l);
-	}
-
-	@Override
-	public void addHistogramSegmentClickListener(ActionListener l) {
-
-		histogramSegmentButton.addActionListener(l);
-	}
-
-	@Override
-	public void addBugSegmentClickListener(ActionListener l) {
-
-		bugSegmentButton.addActionListener(l);
-	}
-
-	@Override
-	public void addResetClickListener(ActionListener l) {
-
-		resetButton.addActionListener(l);
-	}
-
-	@Override
-	public void addErodeClickListener(ActionListener l) {
-
-		erodeButton.addActionListener(l);
-	}
-
-	@Override
-	public void addDilateClickListener(ActionListener l) {
-
-		dilateButton.addActionListener(l);
-	}
-
-	@Override
-	public void addExtractClickListener(ActionListener l) {
-
-		extractButton.addActionListener(l);
-	}
-
-	@Override
-	public void addTrimClickListener(ActionListener l) {
-
-		trimButton.addActionListener(l);
-	}
-
-	@Override
-	public void addNeuralNetworkClickListener(ActionListener l) {
-
-		neuralNetworkUseButton.addActionListener(l);
-	}
-
+    @Override
+    public void addRecognizeNumberClickListener(ActionListener l) {
+	mRecognizeNumberButton.addActionListener(l);
+    }
 }

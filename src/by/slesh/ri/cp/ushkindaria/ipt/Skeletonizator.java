@@ -8,7 +8,7 @@ import java.util.List;
 /*
  * Implements Zhang-Suen thinning algorithm
  */
-public class Skeletonizator extends AbstractTool {
+public class Skeletonizator extends Tool {
     private static final int[][] mOffsets = { { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
 	    { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 } };
 

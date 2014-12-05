@@ -1,10 +1,15 @@
 package by.slesh.ri.cp.ushkindaria.app.view;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,22 +17,43 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import by.slesh.ri.cp.ushkindaria.app.G;
 import by.slesh.ri.cp.ushkindaria.app.view.service.ImageBoxesViewInterface;
 
 public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
-
     private static final long serialVersionUID = -3893100366850568189L;
-    private JLabel            mSourceImageBox;
-    private JLabel            mTargetImageBox;
+    private JLabel mSourceImageBox;
+    private JLabel mTargetImageBox;
+    private JLabel mAreaInterestImageBox;
+    private JLabel mGroupNumberImageBox;
+    private JLabel mGroupNumberSegmentedImageBox;
+    private JLabel mGroupNumberRecognizedImageBox;
+    private JPanel mUnrecognizedPanel;
+    private JPanel mRecognizedPanel;
 
     public ImageBoxesView() {
 
 	setLayout(new GridLayout(1, 2, 5, 5));
 	mSourceImageBox = new JLabel();
 	mTargetImageBox = new JLabel();
+	mAreaInterestImageBox = new JLabel();
+	mGroupNumberImageBox = new JLabel();
+	mGroupNumberSegmentedImageBox = new JLabel();
+	mGroupNumberRecognizedImageBox = new JLabel();
 
 	mSourceImageBox.setHorizontalAlignment(JLabel.CENTER);
 	mTargetImageBox.setHorizontalAlignment(JLabel.CENTER);
+	mAreaInterestImageBox.setHorizontalAlignment(JLabel.CENTER);
+	mGroupNumberImageBox.setHorizontalAlignment(JLabel.CENTER);
+	mGroupNumberSegmentedImageBox.setHorizontalAlignment(JLabel.CENTER);
+	mGroupNumberRecognizedImageBox.setHorizontalAlignment(JLabel.CENTER);
+
+	mGroupNumberImageBox.setBorder(BorderFactory.createLineBorder(
+	        Color.BLUE, 1));
+	mGroupNumberSegmentedImageBox.setBorder(BorderFactory.createLineBorder(
+	        Color.RED, 1));
+	mGroupNumberRecognizedImageBox.setBorder(BorderFactory
+	        .createLineBorder(Color.GREEN, 1));
 
 	JScrollPane sourceScrollPane = new JScrollPane(mSourceImageBox);
 	JScrollPane targetScrollPane = new JScrollPane(mTargetImageBox);
@@ -56,8 +82,41 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 	    }
 	});
 
-	add(sourceScrollPane);
-	add(targetScrollPane);
+	JPanel panel11 = new JPanel(new GridLayout(1, 3, 5, 5));
+	panel11.add(mGroupNumberImageBox);
+	panel11.add(mGroupNumberSegmentedImageBox);
+	panel11.add(mGroupNumberRecognizedImageBox);
+
+	JPanel panel12 = new JPanel(new GridLayout(2, 1));
+	panel12.add(mAreaInterestImageBox);
+	panel12.add(panel11);
+	panel12.setPreferredSize(new Dimension(1, 200));
+	panel12.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+	JPanel panel13 = new JPanel(new BorderLayout());
+	panel13.add(sourceScrollPane);
+	panel13.add(panel12, BorderLayout.PAGE_END);
+
+	mUnrecognizedPanel = new JPanel(new GridLayout(1, 1));
+	mUnrecognizedPanel.setPreferredSize(new Dimension(1, 100));
+	mUnrecognizedPanel.setBorder(BorderFactory.createLineBorder(
+	        Color.BLACK, 1));
+
+	mRecognizedPanel = new JPanel(new GridLayout(1, 1));
+	mRecognizedPanel.setPreferredSize(new Dimension(1, 100));
+	mRecognizedPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,
+	        1));
+
+	JPanel panel22 = new JPanel(new GridLayout(2, 1));
+	panel22.add(mUnrecognizedPanel);
+	panel22.add(mRecognizedPanel);
+
+	JPanel panel21 = new JPanel(new BorderLayout());
+	panel21.add(targetScrollPane);
+	panel21.add(panel22, BorderLayout.PAGE_END);
+
+	add(panel13);
+	add(panel21);
     }
 
     @Override
@@ -82,13 +141,51 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 
     @Override
     public void updateSource(BufferedImage source) {
-
 	mSourceImageBox.setIcon(new ImageIcon(source));
     }
 
     @Override
     public void updateTarget(BufferedImage target) {
-
 	mTargetImageBox.setIcon(new ImageIcon(target));
+    }
+
+    @Override
+    public void updateAreaInterest(BufferedImage area) {
+	mAreaInterestImageBox.setIcon(new ImageIcon(area));
+
+    }
+
+    @Override
+    public void updateGroupNumber(BufferedImage groupNumber) {
+	mGroupNumberImageBox.setIcon(new ImageIcon(groupNumber));
+    }
+
+    @Override
+    public void updateSegmentGroupNumber(BufferedImage targetImage) {
+	mGroupNumberSegmentedImageBox.setIcon(new ImageIcon(targetImage));
+    }
+
+    @Override
+    public void updateUnrecognizeNumber(BufferedImage[] digits) {
+	mUnrecognizedPanel.setLayout(new GridLayout(1, digits.length));
+	mUnrecognizedPanel.removeAll();
+	for (BufferedImage digit : digits) {
+	    JLabel l = new JLabel(new ImageIcon(digit));
+	    l.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+	    mUnrecognizedPanel.add(l);
+	    mUnrecognizedPanel.revalidate();
+	}
+    }
+
+    @Override
+    public void updateRecognizeNumber(BufferedImage[] digits) {
+	mRecognizedPanel.setLayout(new GridLayout(1, digits.length));
+	mRecognizedPanel.removeAll();
+	for (BufferedImage digit : digits) {
+	    JLabel l = new JLabel(new ImageIcon(digit));
+	    l.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+	    mRecognizedPanel.add(l);
+	    mRecognizedPanel.revalidate();
+	}
     }
 }
