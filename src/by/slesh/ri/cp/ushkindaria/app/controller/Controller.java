@@ -1,6 +1,5 @@
 package by.slesh.ri.cp.ushkindaria.app.controller;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,11 +19,10 @@ import by.slesh.ri.cp.ushkindaria.app.model.Model;
 import by.slesh.ri.cp.ushkindaria.app.view.service.ControlViewInterface;
 import by.slesh.ri.cp.ushkindaria.app.view.service.FileViewInterface;
 import by.slesh.ri.cp.ushkindaria.app.view.service.ImageBoxesViewInterface;
+import by.slesh.ri.cp.ushkindaria.ipt.Tool;
 import by.slesh.ri.cp.ushkindaria.ipt.binarization.Binarizator;
 import by.slesh.ri.cp.ushkindaria.ipt.morph.DilateMorph;
 import by.slesh.ri.cp.ushkindaria.ipt.morph.ErodeMorph;
-import by.slesh.ri.cp.ushkindaria.ipt.segment.RelationSegmentator;
-import by.slesh.ri.cp.ushkindaria.nn.FinderPerseptron;
 
 public class Controller implements ActionListener {
 
@@ -33,6 +31,7 @@ public class Controller implements ActionListener {
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent arg0) {
 	    Binarizator.sPercents = arg0.getValue();
+	    System.out.println(Binarizator.sPercents);
 	    mIontrolPanelView.updatePercentValue(arg0.getValue());
 	}
     }
@@ -132,8 +131,10 @@ public class Controller implements ActionListener {
 	    mImageBoxesView.updateTarget(mModel.getTargetImage());
 	    break;
 	case ControlViewInterface.ACTION_SEGMENT_HISTOGRAM:
+	    BufferedImage copy = Tool.trim(mModel.getTargetImage(), 0, 0, 0, 0);
 	    mModel.histogramSegment();
 	    mImageBoxesView.updateTarget(mModel.getTargetImage());
+	    mModel.setTargetImage(copy);
 	    break;
 	case ControlViewInterface.ACTION_SEGMENT_BUG:
 	    mModel.bugSegment();
@@ -144,7 +145,8 @@ public class Controller implements ActionListener {
 	    mImageBoxesView.updateTarget(mModel.getTargetImage());
 	    break;
 	case ControlViewInterface.ACTION_TRIM:
-	    mModel.setTargetImage(mModel.trim(mModel.getTargetImage()));
+	    mModel.setTargetImage(Tool.trim(mModel.getTargetImage()));
+	    mModel.lineDestroy();
 	    mImageBoxesView.updateTarget(mModel.getTargetImage());
 	    break;
 	case ControlViewInterface.ACTION_NEURALNETWORK:
@@ -181,7 +183,7 @@ public class Controller implements ActionListener {
     // return dirFile;
     // }
 
-    private static BufferedImage openFile() {
+    public static BufferedImage openFile() {
 	FC.setFileSelectionMode(JFileChooser.FILES_ONLY);
 	BufferedImage loadedImage = null;
 	int returnValue = FC.showDialog(null, "Этот файл");

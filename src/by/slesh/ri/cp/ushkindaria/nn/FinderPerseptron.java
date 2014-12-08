@@ -15,7 +15,6 @@ public class FinderPerseptron extends Perseptron {
     private FinderPerseptron(int quantityNeurons, int quantityInputs) {
 	super(quantityNeurons, quantityInputs);
 	resizeState = ResizeState.SCALE_LOW;
-	pathToTrainSet = G.PATH_IMAGES_FOR_FINDER;
 	pathToSaveWeights = G.PATH_WEIGHTS_FINDER;
 	pathToSet = G.PATH_SET_FIDNER;
 	targetWidth = G.WIDTH_FOR_FINDER;

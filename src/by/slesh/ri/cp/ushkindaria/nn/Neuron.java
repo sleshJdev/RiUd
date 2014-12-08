@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Neuron {
     private int[] mWeights;
-    private int mLimit = 10;
+    private int mLimit = 9;
 
     Neuron(int m) {
 	mWeights = new int[m];

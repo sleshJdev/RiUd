@@ -46,7 +46,7 @@ public class HistogramSegmentator extends Tool {
 
     BufferedImage source;
 
-    public BufferedImage segment(BufferedImage source) {
+    public BufferedImage segment(BufferedImage source, boolean isDrawLine) {
 	linesX.clear();
 	linesY.clear();
 
@@ -67,8 +67,10 @@ public class HistogramSegmentator extends Tool {
 	    }
 	}
 
-	g.drawLine(getLeftBorder(), 0, getLeftBorder(), h);
-	g.drawLine(getRightBorder(), 0, getRightBorder(), h);
+	if (isDrawLine) {
+	    g.drawLine(getLeftBorder(), 0, getLeftBorder(), h);
+	    g.drawLine(getRightBorder(), 0, getRightBorder(), h);
+	}
 
 	g.setColor(Color.GREEN);
 	for (int y = 1; y < histogramY.length; ++y) {

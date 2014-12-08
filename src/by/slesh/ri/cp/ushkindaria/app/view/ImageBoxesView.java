@@ -7,7 +7,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -17,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import by.slesh.ri.cp.ushkindaria.app.G;
 import by.slesh.ri.cp.ushkindaria.app.view.service.ImageBoxesViewInterface;
 
 public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
@@ -135,7 +133,6 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 
     @Override
     public void addTargetImageBoxClickListener(MouseListener l) {
-
 	mTargetImageBox.addMouseListener(l);
     }
 

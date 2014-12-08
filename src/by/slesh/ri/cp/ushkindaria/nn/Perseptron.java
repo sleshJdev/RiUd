@@ -14,8 +14,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import by.slesh.ri.cp.ushkindaria.ipt.Resizer;
-
 abstract class Perseptron {
     private Neuron[] mNeurons;
     private int mQuantityNeurons;
@@ -30,7 +28,6 @@ abstract class Perseptron {
     protected int targetWidth;
     protected int targetHeight;
     protected ResizeState resizeState = ResizeState.NO;
-    protected String pathToTrainSet;
     protected String pathToSaveWeights;
     protected String pathToSet;
 
@@ -40,7 +37,7 @@ abstract class Perseptron {
 	mNeurons = new Neuron[mQuantityNeurons];
 	for (int j = 0; j < mNeurons.length; j++) {
 	    mNeurons[j] = new Neuron(mQuantityInputs);
-	    mNeurons[j].initWeights(10);
+	    // mNeurons[j].initWeights(10);
 	}
     }
 
@@ -96,33 +93,14 @@ abstract class Perseptron {
 		return (name.endsWith(".bmp"));
 	    }
 	}
-	String[] list = new File(pathToTrainSet + "/").list(new JPGFilter());
+	String[] list = new File(pathToSet + "/").list(new JPGFilter());
 	BufferedImage[] img = new BufferedImage[list.length];
 	MediaTracker mediaTracker = new MediaTracker(new Container());
 	for (int i = 0; i < list.length; ++i) {
 	    try {
-		img[i] = ImageIO
-		        .read(new File(pathToTrainSet + "\\" + list[i]));
-		BufferedImage temp = img[i].getSubimage(10, 10, 40, 40);
-		img[i] = new BufferedImage(temp.getWidth(), temp.getHeight(),
-		        temp.getType());
-		img[i].getGraphics().drawImage(temp, 0, 0, null);
-		switch (resizeState) {
-		case SCALE_UP:
-		    img[i] = Resizer.scaleUp(img[i], targetWidth, targetHeight,
-			    true);
-		    break;
-		case SCALE_LOW:
-		    img[i] = Resizer.scaleLow(img[i], targetWidth,
-			    targetHeight, true);
-		    break;
-		default:
-		    break;
-		}
-		ImageIO.write(img[i], "bmp", new File(pathToSet + "\\"
-		        + list[i]));
-	    } catch (IOException err) {
-		JOptionPane.showMessageDialog(null, err.getMessage());
+		img[i] = ImageIO.read(new File(pathToSet + "\\" + list[i]));
+	    } catch (IOException e) {
+		JOptionPane.showMessageDialog(null, e.getMessage());
 	    }
 	    mediaTracker.addImage(img[i], 0);
 	    try {

@@ -15,7 +15,6 @@ public class RecognizerPerseptron extends Perseptron {
     private RecognizerPerseptron(int quantityNeurons, int quantityInputs) {
 	super(quantityNeurons, quantityInputs);
 	resizeState = ResizeState.SCALE_UP;
-	pathToTrainSet = G.PATH_IMAGES_FOR_RECOGNIZER;
 	pathToSaveWeights = G.PATH_WEIGHTS_RECOGNIZER;
 	pathToSet = G.PATH_SET_RECOGNIZER;
 	targetWidth = G.WIDTH_FOR_RECOGNIZER;

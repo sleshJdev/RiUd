@@ -3,7 +3,6 @@ package by.slesh.ri.cp.ushkindaria.app.view.service;
 import java.awt.Point;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 public interface ImageBoxesViewInterface {
 

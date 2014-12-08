@@ -2,15 +2,20 @@ package by.slesh.ri.cp.ushkindaria.ipt.binarization;
 
 import java.awt.image.BufferedImage;
 
+import by.slesh.ri.cp.ushkindaria.app.G;
 import by.slesh.ri.cp.ushkindaria.ipt.Tool;
 
 public class Binarizator extends Tool {
 
-    public static int sPercents = 10;
+    public static int sPercents = G.INIT_BIN_PERCENT;
 
     public static BufferedImage binarization(BufferedImage source) {
 	int threshold = findThreshold(source);
 	return bin(source, threshold);
+    }
+
+    public static BufferedImage binByThreshold(BufferedImage source) {
+	return bin(source, 200);
     }
 
     private static BufferedImage bin(BufferedImage source, int threshold) {
@@ -25,7 +30,9 @@ public class Binarizator extends Tool {
 		else sourceRgb[pos] = _1;
 	    }
 	}
-	return rgbToImage(sourceRgb, w, h);
+	BufferedImage target = new BufferedImage(w, h, source.getType());
+	target.setRGB(0, 0, w, h, sourceRgb, 0, w);
+	return target;
     }
 
     /*
