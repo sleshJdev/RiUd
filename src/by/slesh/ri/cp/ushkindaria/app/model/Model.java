@@ -91,10 +91,10 @@ public class Model {
 
     public void extractAreaInterest() {
 	int x1 = histogramSegmentator.getLeftBorder();
-	int y1 = mYCoords[0] + 25;
+	int y1 = mYCoords[2] + 25;
 
 	int x2 = histogramSegmentator.getRightBorder();
-	int y2 = y1 + 20;
+	int y2 = y1 + 17;
 
 	mTargetImage = Tool.cut(Tool.trim(mSourceImage), x1, y1, x2, y2);
 	mTargetImage = Resizer.scaleUp(mTargetImage, mTargetImage.getWidth(),
