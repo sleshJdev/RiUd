@@ -36,15 +36,6 @@ public class Controller implements ActionListener {
 	}
     }
 
-    private class SegmentThresholChangeValueListener implements
-	    AdjustmentListener {
-	@Override
-	public void adjustmentValueChanged(AdjustmentEvent arg0) {
-	    mModel.setSegmentThreshold(arg0.getValue());
-	    mIontrolPanelView.updateSegmentThresholdValue(arg0.getValue());
-	}
-    }
-
     private class MouseClickAdapter extends MouseAdapter {
 
 	@Override
@@ -82,8 +73,6 @@ public class Controller implements ActionListener {
 	mIontrolPanelView.addOpenFileClickListener(this);
 	mIontrolPanelView
 	        .addBinPercentChangeValueListener(new BinPercentsChangeValueListener());
-	mIontrolPanelView
-	        .addSegmentThresholdChangeValueListener(new SegmentThresholChangeValueListener());
 	mIontrolPanelView.addSkeletonizationClickListener(this);
 	mIontrolPanelView.addHistogramSegmentClickListener(this);
 	mIontrolPanelView.addBugSegmentClickListener(this);
@@ -100,10 +89,9 @@ public class Controller implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent arg0) {
-
 	switch (arg0.getActionCommand()) {
 	case FileViewInterface.ACTION_TEACH:
-
+	    
 	    break;
 	case ControlViewInterface.ACTION_FILE_OPEN:
 	    BufferedImage source = openFile();
@@ -150,7 +138,7 @@ public class Controller implements ActionListener {
 	    mImageBoxesView.updateTarget(mModel.getTargetImage());
 	    break;
 	case ControlViewInterface.ACTION_NEURALNETWORK:
-	    mModel.detect();
+	    mModel.findSymbols();
 	    mImageBoxesView.updateTarget(mModel.getTargetImage());
 	    break;
 	case ControlViewInterface.ACTION_EXTRACT_AREA_INTEREST:
@@ -162,8 +150,10 @@ public class Controller implements ActionListener {
 	    mImageBoxesView.updateGroupNumber(mModel.getTargetImage());
 	    break;
 	case ControlViewInterface.ACTION_SEGMENT_GROUP_NUMBER:
+	    mImageBoxesView.updateSegmentGroupNumber(mModel
+		    .segmentGroupNumber());
 	    mImageBoxesView
-		    .updateUnrecognizeNumber(mModel.segmentGroupNumber());
+		    .updateUnrecognizeNumber(mModel.skeletonizationSegmentDigits());
 	    break;
 	case ControlViewInterface.ACTION_RECOGNIZE_NUMBER:
 	    mImageBoxesView.updateRecognizeNumber(mModel.recognizeNumber());

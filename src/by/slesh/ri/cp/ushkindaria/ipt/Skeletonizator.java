@@ -9,11 +9,11 @@ import java.util.List;
  * Implements Zhang-Suen thinning algorithm
  */
 public class Skeletonizator extends Tool {
-    private static final int[][] mOffsets = { { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 },
-	    { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 } };
+    private static final int[][] mOffsets = { { 0, -1 }, { 1, -1 }, { 1, 0 },
+	    { 1, 1 }, { 0, 1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 } };
 
-    private static final int[][][] mCheckGroups = { { { 0, 2, 4 }, { 2, 4, 6 } },
-	    { { 0, 2, 6 }, { 0, 4, 6 } } };
+    private static final int[][][] mCheckGroups = {
+	    { { 0, 2, 4 }, { 2, 4, 6 } }, { { 0, 2, 6 }, { 0, 4, 6 } } };
 
     private static List<Point> toWhite = new ArrayList<>();
     private int[] sourceRgb;
@@ -23,7 +23,7 @@ public class Skeletonizator extends Tool {
     public BufferedImage skeletonization(BufferedImage source) {
 	w = source.getWidth();
 	h = source.getHeight();
-	sourceRgb = source.getRGB(0, 0, w, h, null, w, w);
+	sourceRgb = source.getRGB(0, 0, w, h, null, 0, w);
 	boolean firstStep = false;
 	boolean hasChanged;
 	do {
@@ -52,8 +52,9 @@ public class Skeletonizator extends Tool {
 		sourceRgb[w * p.y + p.x] = _0;
 	    toWhite.clear();
 	} while (hasChanged || firstStep);
-	source.setRGB(0, 0, w, h, sourceRgb, w, w);
-	return source;
+	BufferedImage taget = new BufferedImage(w, h, source.getType());
+	taget.setRGB(0, 0, w, h, sourceRgb, 0, w);
+	return taget;
     }
 
     private int countBlackNeighbors(int y, int x) {
@@ -62,7 +63,7 @@ public class Skeletonizator extends Tool {
 	    int posY = y + mOffsets[i][1];
 	    int posX = x + mOffsets[i][0];
 	    int pos = w * posY + posX;
-	    if (sourceRgb[pos] == _1){
+	    if (sourceRgb[pos] == _1) {
 		++count;
 	    }
 	}
@@ -79,7 +80,7 @@ public class Skeletonizator extends Tool {
 		posY = y + mOffsets[i + 1][1];
 		posX = x + mOffsets[i + 1][0];
 		pos = w * posY + posX;
-		if (sourceRgb[pos] == _1){
+		if (sourceRgb[pos] == _1) {
 		    count++;
 		}
 	    }

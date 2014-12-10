@@ -46,7 +46,7 @@ public class BugSegmentator extends Tool {
 	int oldColor = _0;
 	int stopper = 0;
 	do {
-	    if (stopper++ == 1000000) break;
+	    if (stopper++ == 1000) break;
 	    if (start.x < 0 || start.x >= w) break;
 	    if (start.y < 0 || start.y >= h) break;
 	    whereLook = moveBug(start, whereLook, whereMove);

@@ -14,8 +14,8 @@ public class Binarizator extends Tool {
 	return bin(source, threshold);
     }
 
-    public static BufferedImage binByThreshold(BufferedImage source) {
-	return bin(source, 200);
+    public static BufferedImage binByThreshold(BufferedImage source, int t) {
+	return bin(source, t);
     }
 
     private static BufferedImage bin(BufferedImage source, int threshold) {

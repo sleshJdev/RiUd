@@ -18,7 +18,7 @@ public interface ImageBoxesViewInterface {
 
     void getLocationOnImage(Point currentLocation);
 
-    void updateSegmentGroupNumber(BufferedImage targetImage);
+    void updateSegmentGroupNumber(BufferedImage[] digits);
     
     void updateUnrecognizeNumber(BufferedImage[] digits);
 

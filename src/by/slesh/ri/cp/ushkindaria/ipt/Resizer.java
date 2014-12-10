@@ -13,11 +13,6 @@ import java.awt.image.BufferedImage;
  *
  */
 public class Resizer {
-    public static BufferedImage resize(BufferedImage source,
-	    boolean isHigherQuality) {
-	return scaleLow(source, 30, 30, isHigherQuality);
-    }
-
     public static BufferedImage scaleUp(BufferedImage img, int targetWidth,
 	    int targetHeight, boolean higherQuality) {
 	int type = (img.getTransparency() == Transparency.OPAQUE) ? BufferedImage.TYPE_INT_RGB

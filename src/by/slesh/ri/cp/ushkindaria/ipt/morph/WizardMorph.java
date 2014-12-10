@@ -4,11 +4,11 @@ import java.awt.image.BufferedImage;
 
 public class WizardMorph {
 
-    private static final AbstractMorph MORPH_CLEAN = new CleanMorph();
+    private static final AbstractMorph MORPH_CLEAN = new ClearMorph();
     private static final AbstractMorph MORPH_ERODE = new ErodeMorph();
     private static final AbstractMorph MORPH_DILATE = new DilateMorph();
 
-    public static BufferedImage clean(BufferedImage source) {
+    public static BufferedImage clear(BufferedImage source) {
 
 	return MORPH_CLEAN.morph(source);
     }

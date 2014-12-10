@@ -39,13 +39,13 @@ public class Digit {
     }
 
     public BufferedImage toImage() {
-	int h = mYMax - mYMin + 1;
-	int w = mXMax - mXMin + 1;
+	int h = mYMax - mYMin + 1 + 4;
+	int w = mXMax - mXMin + 1 + 4;
 	BufferedImage digit = new BufferedImage(w, h, Tool.IMAGE_TYPE);
 	digit.getGraphics().setColor(Color.WHITE);
 	digit.getGraphics().fillRect(0, 0, w, h);
 	for (Point point : mPoints) {
-	    digit.setRGB(point.x - mXMin, point.y - mYMin, mColor.getRGB());
+	    digit.setRGB(point.x - mXMin + 2, point.y - mYMin + 2, mColor.getRGB());
 	}
 	return digit;
     }

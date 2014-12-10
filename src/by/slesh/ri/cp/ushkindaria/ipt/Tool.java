@@ -9,13 +9,9 @@ import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-
-import javax.imageio.ImageIO;
-
-import by.slesh.ri.cp.ushkindaria.app.G;
+import java.util.List;
 
 public class Tool {
 
@@ -46,6 +42,7 @@ public class Tool {
 		}
 	    }
 	}
+	if(n == 0) return source;
 	center.setLocation(center.x / n, center.y / n);
 	int dx = w / 2 - center.x;
 	int dy = h / 2 - center.y;
@@ -70,24 +67,14 @@ public class Tool {
 	return source;
     }
 
-    public static void main(String[] args) {
-	try {
-	    BufferedImage i = ImageIO.read(new File("d:\\t.bmp"));
-	    i = centrain1(i);
-	    ImageIO.write(i, "bmp", new File("d:\\t1.bmp"));
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
-    }
-
     public static BufferedImage centrain1(BufferedImage source) {
 	int h = source.getHeight();
 	int w = source.getWidth();
 	int[] pixels = source.getRGB(0, 0, w, h, null, 0, w);
-	int xMin = 0;
-	int xMax = w - 1;
-	int yMin = 0;
-	int yMax = h - 1;
+	int xMin = w - 1;
+	int xMax = 0;
+	int yMin = h - 1;
+	int yMax = 0;
 	for (int y = 0; y < h; ++y) {
 	    for (int x = 0; x < w; ++x) {
 		if (pixels[w * y + x] == Tool._1) {
@@ -98,8 +85,14 @@ public class Tool {
 		}
 	    }
 	}
+	if (xMax < w - 1) ++xMax;
+	if (yMax < h - 1) ++yMax;
+	if(xMin < 0) xMin = 0;
+	if(xMax >= w) xMax = w - 1;
+	if(yMin < 0) yMin = 0;
+	if(yMax >= h) yMax = h - 1;
 	BufferedImage bi = cut(source, xMin, yMin, xMax, yMax);
-	bi = Resizer.scaleUp(bi, G.WIDTH_FOR_FINDER, G.HEIGHT_FOR_FINDER, true);
+	// bi = Resizer.scaleUp(bi, G.WIDTH_IMAGE, G.HEIGHT_IMAGE, true);
 	return bi;
     }
 

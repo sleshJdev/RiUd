@@ -24,8 +24,7 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
     private JLabel mTargetImageBox;
     private JLabel mAreaInterestImageBox;
     private JLabel mGroupNumberImageBox;
-    private JLabel mGroupNumberSegmentedImageBox;
-    private JLabel mGroupNumberRecognizedImageBox;
+    private JPanel mGroupNumberSegmentedPanel;
     private JPanel mUnrecognizedPanel;
     private JPanel mRecognizedPanel;
 
@@ -36,28 +35,23 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 	mTargetImageBox = new JLabel();
 	mAreaInterestImageBox = new JLabel();
 	mGroupNumberImageBox = new JLabel();
-	mGroupNumberSegmentedImageBox = new JLabel();
-	mGroupNumberRecognizedImageBox = new JLabel();
 
 	mSourceImageBox.setHorizontalAlignment(JLabel.CENTER);
 	mTargetImageBox.setHorizontalAlignment(JLabel.CENTER);
 	mAreaInterestImageBox.setHorizontalAlignment(JLabel.CENTER);
 	mGroupNumberImageBox.setHorizontalAlignment(JLabel.CENTER);
-	mGroupNumberSegmentedImageBox.setHorizontalAlignment(JLabel.CENTER);
-	mGroupNumberRecognizedImageBox.setHorizontalAlignment(JLabel.CENTER);
 
 	mGroupNumberImageBox.setBorder(BorderFactory.createLineBorder(
 	        Color.BLUE, 1));
-	mGroupNumberSegmentedImageBox.setBorder(BorderFactory.createLineBorder(
+
+	mGroupNumberSegmentedPanel = new JPanel(new GridLayout(1, 1));
+	mGroupNumberSegmentedPanel.setBorder(BorderFactory.createLineBorder(
 	        Color.RED, 1));
-	mGroupNumberRecognizedImageBox.setBorder(BorderFactory
-	        .createLineBorder(Color.GREEN, 1));
 
 	JScrollPane sourceScrollPane = new JScrollPane(mSourceImageBox);
 	JScrollPane targetScrollPane = new JScrollPane(mTargetImageBox);
 
 	targetScrollPane.getViewport().addChangeListener(new ChangeListener() {
-
 	    @Override
 	    public void stateChanged(ChangeEvent arg0) {
 
@@ -69,7 +63,6 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 	});
 
 	sourceScrollPane.getViewport().addChangeListener(new ChangeListener() {
-
 	    @Override
 	    public void stateChanged(ChangeEvent arg0) {
 
@@ -82,11 +75,10 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 
 	JPanel panel11 = new JPanel(new GridLayout(1, 3, 5, 5));
 	panel11.add(mGroupNumberImageBox);
-	panel11.add(mGroupNumberSegmentedImageBox);
-	panel11.add(mGroupNumberRecognizedImageBox);
+	panel11.add(mGroupNumberSegmentedPanel);
 
 	JPanel panel12 = new JPanel(new GridLayout(2, 1));
-	panel12.add(mAreaInterestImageBox);
+	panel12.add(new JScrollPane(mAreaInterestImageBox));
 	panel12.add(panel11);
 	panel12.setPreferredSize(new Dimension(1, 200));
 	panel12.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -158,8 +150,15 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
     }
 
     @Override
-    public void updateSegmentGroupNumber(BufferedImage targetImage) {
-	mGroupNumberSegmentedImageBox.setIcon(new ImageIcon(targetImage));
+    public void updateSegmentGroupNumber(BufferedImage[] digits) {
+	mGroupNumberSegmentedPanel.setLayout(new GridLayout(1, digits.length));
+	mGroupNumberSegmentedPanel.removeAll();
+	for (BufferedImage digit : digits) {
+	    JLabel l = new JLabel(new ImageIcon(digit));
+	    l.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+	    mGroupNumberSegmentedPanel.add(l);
+	    mGroupNumberSegmentedPanel.revalidate();
+	}
     }
 
     @Override

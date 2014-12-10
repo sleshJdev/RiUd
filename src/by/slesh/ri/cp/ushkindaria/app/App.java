@@ -50,13 +50,13 @@ public class App {
 		BufferedImage image = ImageIO.read(f);
 		int h = image.getHeight();
 		int w = image.getWidth();
-		image = Binarizator.binByThreshold(image);
+		image = Binarizator.binByThreshold(image, 200);
 		image = cut(image);
 //		image = WizardMorph.erode(image);
 		image = Resizer.scaleUp(image, w, h, true);
-		image = Resizer.scaleLow(image, G.WIDTH_FOR_FINDER,
-		        G.HEIGHT_FOR_FINDER, true);
-		image = Binarizator.binByThreshold(image);
+		image = Resizer.scaleLow(image, G.WIDTH_IMAGE,
+		        G.HEIGHT_IMAGE, true);
+		image = Binarizator.binByThreshold(image, 200);
 		ImageIO.write(image, "bmp", new File(G.PATH_SET_FIDNER + "\\"
 		        + fileName));
 	    }
@@ -67,7 +67,7 @@ public class App {
 
     public static void main(String[] args) {
 
-	helper();
+//	helper();
 	MainView mainView = new MainView();
 	mainView.setVisible(true);
     }

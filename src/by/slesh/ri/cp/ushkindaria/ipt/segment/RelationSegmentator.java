@@ -32,12 +32,13 @@ public class RelationSegmentator {
     private int mQuantityPixels;
 
     public BufferedImage[] segment() {
-	for (int k = 0; k < mPixelData.length; ++k) {
-	    if (mPixelData[k] == Tool._1) {
+	for (int x = 0; x < mWidth; ++x) {
+	    int index = mWidth * mHeight / 2 + x;
+	    if (mPixelData[index] == Tool._1) {
 		mCurrentDigit = new Digit(createColor());
 		mQuantityPixels = 0;
-		mark(k);
-		if (mQuantityPixels > 20) mDigits.add(mCurrentDigit);
+		mark(index);
+		if (mQuantityPixels > 10) mDigits.add(mCurrentDigit);
 	    }
 	}
 	BufferedImage[] digits = new BufferedImage[mDigits.size()];

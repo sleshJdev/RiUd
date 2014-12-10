@@ -40,6 +40,6 @@ public class Scanner {
 		}
 	    }
 	}
-	return currentX + WIDTH;
+	return currentX + WIDTH + 5;
     }
 }

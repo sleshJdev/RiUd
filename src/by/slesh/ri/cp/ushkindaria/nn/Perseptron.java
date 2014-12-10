@@ -14,31 +14,54 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-abstract class Perseptron {
+import by.slesh.ri.cp.ushkindaria.app.G;
+import by.slesh.ri.cp.ushkindaria.ipt.Tool;
+
+/**
+ * @author slesh
+ *
+ */
+public class Perseptron {
+    private static Perseptron mInstance;
+
     private Neuron[] mNeurons;
     private int mQuantityNeurons;
     private int mQuantityInputs;
     private int[] mSums;
 
-    protected enum ResizeState {
-	SCALE_UP, SCALE_LOW, NO
-    }
+    protected String[] mNames;
+    protected int mTargetWidth;
+    protected int mTargetHeight;
+    protected String mPathToSaveWeights;
+    protected String mPathToSet;
 
-    protected String[] names;
-    protected int targetWidth;
-    protected int targetHeight;
-    protected ResizeState resizeState = ResizeState.NO;
-    protected String pathToSaveWeights;
-    protected String pathToSet;
-
-    protected Perseptron(int quantityNeurons, int quantityInputs) {
+    private Perseptron(int quantityNeurons, int quantityInputs) {
 	mQuantityNeurons = quantityNeurons;
 	mQuantityInputs = quantityInputs;
 	mNeurons = new Neuron[mQuantityNeurons];
+	mPathToSaveWeights = G.PATH_WEIGHTS_FINDER;
+	mPathToSet = G.PATH_SET_FIDNER;
+	mTargetWidth = G.WIDTH_IMAGE;
+	mTargetHeight = G.HEIGHT_IMAGE;
+	mNames = G.NAMES_FOR_FINDER;
 	for (int j = 0; j < mNeurons.length; j++) {
 	    mNeurons[j] = new Neuron(mQuantityInputs);
 	    // mNeurons[j].initWeights(10);
 	}
+    }
+
+    public static void initInstance(int quantityNeurons, int quantityInputs) {
+	if (mInstance == null) {
+	    mInstance = new Perseptron(quantityNeurons, quantityInputs);
+	}
+    }
+
+    public static Perseptron getInstance() {
+	return mInstance;
+    }
+
+    public int[] recognize(BufferedImage image) {
+	return recognize(initX(image));
     }
 
     public int[] recognize(int[] x) {
@@ -82,8 +105,8 @@ abstract class Perseptron {
     }
 
     private void teach(BufferedImage source, int label) {
-	int[] x = Helpers.initX(source);
-	int[] y = Helpers.initY(label, mQuantityNeurons);
+	int[] x = initX(source);
+	int[] y = initY(label, mQuantityNeurons);
 	teach(x, y);
     }
 
@@ -93,12 +116,12 @@ abstract class Perseptron {
 		return (name.endsWith(".bmp"));
 	    }
 	}
-	String[] list = new File(pathToSet + "/").list(new JPGFilter());
+	String[] list = new File(mPathToSet + "/").list(new JPGFilter());
 	BufferedImage[] img = new BufferedImage[list.length];
 	MediaTracker mediaTracker = new MediaTracker(new Container());
 	for (int i = 0; i < list.length; ++i) {
 	    try {
-		img[i] = ImageIO.read(new File(pathToSet + "\\" + list[i]));
+		img[i] = ImageIO.read(new File(mPathToSet + "\\" + list[i]));
 	    } catch (IOException e) {
 		JOptionPane.showMessageDialog(null, e.getMessage());
 	    }
@@ -119,8 +142,8 @@ abstract class Perseptron {
 	    int[] weights = getWeights(k);
 	    try {
 		FileWriter writer = new FileWriter(getFileName(k));
-		for (int index = 0, y = 0; y < targetHeight; ++y) {
-		    for (int x = 0; x < targetWidth; ++x) {
+		for (int index = 0, y = 0; y < mTargetHeight; ++y) {
+		    for (int x = 0; x < mTargetWidth; ++x) {
 			String s = String.format("%1$3s",
 			        Integer.toString(weights[index++]));
 			writer.write(s);
@@ -135,13 +158,13 @@ abstract class Perseptron {
     }
 
     public String getNameById(int id) {
-	return names[id];
+	return mNames[id];
     }
 
     public int getIdClassByName(String name) {
 	int id = 0;
 	for (int i = 0; i < mQuantityNeurons; ++i) {
-	    if (names[i].equals(name)) {
+	    if (mNames[i].equals(name)) {
 		id = i;
 		break;
 	    }
@@ -150,7 +173,7 @@ abstract class Perseptron {
     }
 
     private String getFileName(int id) {
-	return pathToSaveWeights + "\\" + getNameById(id) + ".txt";
+	return mPathToSaveWeights + "\\" + getNameById(id) + ".txt";
     }
 
     public int getNeuronCount() {
@@ -167,5 +190,24 @@ abstract class Perseptron {
 
     public int[] getAnswer() {
 	return mSums;
+    }
+
+    public static int[] initX(BufferedImage image) {
+	int h = image.getHeight();
+	int w = image.getWidth();
+	int[] binaryImage = new int[w * h];
+	for (int y = 0, k = 0; y < h; ++y) {
+	    for (int x = 0; x < w; ++x) {
+		binaryImage[k++] = image.getRGB(x, y) == Tool._0 ? -1 : 1;
+	    }
+	}
+	return binaryImage;
+    }
+
+    public static int[] initY(int code, int n) {
+
+	int[] y = new int[n];
+	y[code] = 1;
+	return y;
     }
 }

@@ -34,11 +34,7 @@ public interface ControlViewInterface {
 
     void updatePercentValue(int value);
 
-    void updateSegmentThresholdValue(int value);
-
     void enableControls();
-
-    void addSegmentThresholdChangeValueListener(AdjustmentListener l);
 
     void addResetClickListener(ActionListener l);
 

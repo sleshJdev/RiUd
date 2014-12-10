@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentListener;
 
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -22,8 +24,6 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
     private JTextField mPercentValueTextField;
     private JScrollBar mPercentScrollBar;
     private JButton mBinarizationButton;
-    private JTextField mSegmentThresholdValueTextField;
-    private JScrollBar mSegmentThresholScrollBar;
     private JButton mHistogramSegmentButton;
     private JButton mSkeletonizationButton;
     private JButton mOpenFileButton;
@@ -39,7 +39,6 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
     private JButton mRecognizeNumberButton;
 
     public ControlPanelView() {
-
 	mOpenFileButton = new JButton("Загрузить изображение");
 	mOpenFileButton.setActionCommand(ACTION_FILE_OPEN);
 
@@ -66,15 +65,6 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
 	/* Segment controls */
 	mHistogramSegmentButton = createButton("Выделить края",
 	        ACTION_SEGMENT_HISTOGRAM, false);
-	mSegmentThresholScrollBar = new JScrollBar(JScrollBar.HORIZONTAL,
-	        G.INIT_SEGMENT_THRESHOLD, 1, 0, 500);
-	mSegmentThresholScrollBar.setEnabled(false);
-	mSegmentThresholdValueTextField = new JTextField("Порог сегментации = "
-	        + G.INIT_SEGMENT_THRESHOLD);
-	mSegmentThresholdValueTextField
-	        .setHorizontalAlignment(JTextField.CENTER);
-	mSegmentThresholdValueTextField.setEditable(false);
-	/* =========== */
 
 	mResetButton = createButton("Сбросить", ACTION_RESET, false);
 
@@ -102,30 +92,66 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
 	        ACTION_RECOGNIZE_NUMBER, false);
 	mRecognizeNumberButton.setBackground(Color.GREEN);
 
-	setLayout(new GridLayout(20, 1));
+	BoxLayout bl = new BoxLayout(this, BoxLayout.Y_AXIS);
+	setLayout(bl);
 
-	add(mOpenFileButton);
-	add(mResetButton);
-	add(mSkeletonizationButton);
-	add(mBugSegmentButton);
-	add(new JPanel());
-	add(mBinarizationButton);
-	add(mPercentScrollBar);
-	add(mPercentValueTextField);
+	JPanel panel = null;
+	JPanel panelTitle = null;
 
-	add(mTrimButton);
-	add(mErodeButton);
-	add(mDilateButton);
+	panel = new JPanel(new GridLayout(1, 2, 5, 5));
+	panel.add(mOpenFileButton);
+	panel.add(mResetButton);
+	panelTitle = new JPanel(new GridLayout(1, 1, 5, 5));
+	panelTitle.setBorder(BorderFactory.createTitledBorder("Файл"));
+	panelTitle.add(panel);
+	add(panelTitle);
 
-	add(mHistogramSegmentButton);
-	add(mSegmentThresholScrollBar);
-	add(mSegmentThresholdValueTextField);
+	panel = new JPanel(new GridLayout(1, 2, 5, 5));
+	panel.add(mSkeletonizationButton);
+	panel.add(mBugSegmentButton);
+	panelTitle = new JPanel();
+	panelTitle.setBorder(BorderFactory
+	        .createTitledBorder("Утоньшение/Оконтуривание"));
+	panelTitle.add(panel);
+	add(panelTitle);
 
-	add(mNeuralNetworkUseButton);
-	add(mExtractAreaInterestButton);
-	add(mExtractGroupNumberButton);
-	add(mSegmentGroupNumberButton);
-	add(mRecognizeNumberButton);
+	panel = new JPanel(new GridLayout(1, 2, 5, 5));
+	panel.add(mPercentScrollBar);
+	panel.add(mPercentValueTextField);
+	panelTitle = new JPanel(new GridLayout(2, 1, 5, 5));
+	panelTitle.setBorder(BorderFactory.createTitledBorder("Бинаризация"));
+	panelTitle.add(mBinarizationButton);
+	panelTitle.add(panel);
+	add(panelTitle);
+
+	panelTitle = new JPanel(new GridLayout(2, 1, 5, 5));
+	panelTitle.setBorder(BorderFactory.createTitledBorder("Обработка"));
+	panel = new JPanel(new GridLayout(1, 2, 5, 5));
+	panel.add(mErodeButton);
+	panel.add(mDilateButton);
+	panelTitle.add(panel);
+	panel = new JPanel(new GridLayout(1, 2, 5, 5));
+	panel.add(mTrimButton);
+	panel.add(mHistogramSegmentButton);
+	panelTitle.add(panel);
+	add(panelTitle);
+	
+	panelTitle = new JPanel(new GridLayout(2, 1, 5, 5));
+	panelTitle.setBorder(BorderFactory.createTitledBorder("Сегментация"));
+	panel = new JPanel(new GridLayout(4, 1, 5, 5));
+	panel.add(mNeuralNetworkUseButton);
+	panel.add(mExtractAreaInterestButton);
+	panel.add(mExtractGroupNumberButton);
+	panel.add(mSegmentGroupNumberButton);
+	panelTitle.add(panel);
+	add(panelTitle);
+	
+	panelTitle = new JPanel(new GridLayout(1, 1, 5, 5));
+	panelTitle.setBorder(BorderFactory.createTitledBorder("Распознование"));
+	panel = new JPanel();
+	panel.add(mRecognizeNumberButton);
+	panelTitle.add(panel);
+	add(panelTitle);
     }
 
     private JButton createButton(String caption, String actionCommand,
@@ -156,12 +182,6 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
     }
 
     @Override
-    public void updateSegmentThresholdValue(int value) {
-	String text = "Порог сегментации = " + value;
-	mSegmentThresholdValueTextField.setText(text);
-    }
-
-    @Override
     public void enableControls() {
 	enableComponents(this, true);
     }
@@ -184,11 +204,6 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
     @Override
     public void addBinPercentChangeValueListener(AdjustmentListener l) {
 	mPercentScrollBar.addAdjustmentListener(l);
-    }
-
-    @Override
-    public void addSegmentThresholdChangeValueListener(AdjustmentListener l) {
-	mSegmentThresholScrollBar.addAdjustmentListener(l);
     }
 
     @Override
