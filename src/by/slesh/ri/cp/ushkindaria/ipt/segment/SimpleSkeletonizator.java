@@ -145,7 +145,6 @@ public class SimpleSkeletonizator {
 		    q.add(i + 1);
 		    q.add(j + 1);
 		}
-
 	    }
 	    bi = -1;
 	    bj = -1;

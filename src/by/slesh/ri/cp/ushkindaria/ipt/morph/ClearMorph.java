@@ -15,7 +15,7 @@ public class ClearMorph extends AbstractMorph {
 	int[] copy = pixels.clone();
 	for (int y = 1; y < h - 1; ++y) {
 	    for (int x = 1; x < w - 1; ++x) {
-		if (countNeighbour(pixels, w, x, y) < 3) {
+		if (countNeighbour(pixels, w, x, y) < 5) {
 		    copy[w * y + x] = Tool._0;
 		}
 	    }

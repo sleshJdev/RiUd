@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import by.slesh.ri.cp.ushkindaria.app.G;
 import by.slesh.ri.cp.ushkindaria.ipt.Tool;
 
 public class HistogramSegmentator extends Tool {
@@ -14,23 +13,11 @@ public class HistogramSegmentator extends Tool {
     private int[] histogramX;
     private int[] histogramY;
 
-    private int threshold = G.INIT_SEGMENT_THRESHOLD;
-
     private List<Integer> linesX = new ArrayList<Integer>();
     private List<Integer> linesY = new ArrayList<Integer>();
 
-    private int w;
-    private int h;
-
-    public int getThreshold() {
-
-	return threshold;
-    }
-
-    public void setThreshold(int threshold) {
-
-	this.threshold = threshold;
-    }
+    private int mWidth;
+    private int mHeight;
 
     public int getXByLineNumber(int lineNumber) {
 
@@ -46,63 +33,83 @@ public class HistogramSegmentator extends Tool {
 
     BufferedImage source;
 
-    public BufferedImage segment(BufferedImage source, boolean isDrawLine) {
+    public BufferedImage segment(BufferedImage source, int xThreshold, int yThreshold, boolean isDrawLine) {
 	linesX.clear();
 	linesY.clear();
 
 	this.source = source;
 
-	h = source.getHeight();
-	w = source.getWidth();
-	countHistogram(source.getRGB(0, 0, w, h, null, w, w), h, w);
+	mHeight = source.getHeight();
+	mWidth = source.getWidth();
+	countHistogram(source.getRGB(0, 0, mWidth, mHeight, null, mWidth, mWidth), mHeight, mWidth);
 	Graphics g = source.getGraphics();
 
 	g.setColor(Color.RED);
 	if (histogramX == null || histogramY == null) return null;
 	for (int x = 2; x < histogramX.length; ++x) {
 	    int jump = Math.abs(histogramX[x] - histogramX[x - 1]);
-	    jump += Math.abs(histogramX[x - 2] - histogramX[x - 1]);
-	    if (jump > 15) {
+	    if (jump > xThreshold) {
 		linesX.add(x);
 	    }
 	}
 
 	if (isDrawLine) {
-	    g.drawLine(getLeftBorder(), 0, getLeftBorder(), h);
-	    g.drawLine(getRightBorder(), 0, getRightBorder(), h);
+	    g.drawLine(getLeftBorder(), 0, getLeftBorder(), mHeight);
+	    g.drawLine(getRightBorder(), 0, getRightBorder(), mHeight);
 	}
 
 	g.setColor(Color.GREEN);
 	for (int y = 1; y < histogramY.length; ++y) {
 	    int jump = Math.abs(histogramY[y] - histogramY[y - 1]);
-	    if (jump > threshold) {
+	    if (jump > 20) {
 		linesY.add(y);
 	    }
+	}
+	
+	if (isDrawLine) {
+	    g.drawLine(0, getTopBorder(), mWidth, getTopBorder());
+	    g.drawLine(0, getBottomBorder(), mWidth, getBottomBorder());
 	}
 
 	return source;
     }
 
     public int getLeftBorder() {
-
 	if (linesX.size() == 0) return 0;
 	for (int k = 1; k < linesX.size(); ++k) {
 	    int x = linesX.get(k);
-	    if (x > 5) return x;
+	    if (x > 50) return x;
 	}
 	return 0;
     }
 
     public int getRightBorder() {
-
 	if (linesX.size() == 0) return 0;
 	for (int k = linesX.size() - 1; k >= 1; --k) {
 	    int x = linesX.get(k);
-	    if (x < w - 5) return x;
+	    if (x < mWidth - 50) return x;
 	}
 	return 0;
     }
 
+    public int getTopBorder() {
+	if (linesY.size() == 0) return 0;
+	for (int k = 1; k < linesY.size(); ++k) {
+	    int y = linesY.get(k);
+	    if (y > 50) return y;
+	}
+	return 0;
+    }
+
+    public int getBottomBorder() {
+	if (linesY.size() == 0) return 0;
+	for (int k = linesY.size() - 1; k >= 1; --k) {
+	    int y = linesY.get(k);
+	    if (y < mHeight - 50) return y;
+	}
+	return 0;
+    }
+    
     private void countHistogram(int[] rgb, int h, int w) {
 
 	histogramX = new int[w];

@@ -9,9 +9,7 @@ import java.awt.geom.Point2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class Tool {
 
@@ -42,7 +40,7 @@ public class Tool {
 		}
 	    }
 	}
-	if(n == 0) return source;
+	if (n == 0) return source;
 	center.setLocation(center.x / n, center.y / n);
 	int dx = w / 2 - center.x;
 	int dy = h / 2 - center.y;
@@ -55,7 +53,7 @@ public class Tool {
 
 		if (x1 < 0) x1 = 0;
 		if (y1 < 0) y1 = 0;
-
+		
 		if (x1 >= w) x1 = w - 1;
 		if (y1 >= h) y1 = h - 1;
 
@@ -85,12 +83,10 @@ public class Tool {
 		}
 	    }
 	}
-	if (xMax < w - 1) ++xMax;
-	if (yMax < h - 1) ++yMax;
-	if(xMin < 0) xMin = 0;
-	if(xMax >= w) xMax = w - 1;
-	if(yMin < 0) yMin = 0;
-	if(yMax >= h) yMax = h - 1;
+	if (xMax < w - 1) xMax += 2;
+	if (yMax < h - 1) yMax += 2;
+	if (xMin > 0) --xMin;
+	if (yMin > 0) --yMin;
 	BufferedImage bi = cut(source, xMin, yMin, xMax, yMax);
 	// bi = Resizer.scaleUp(bi, G.WIDTH_IMAGE, G.HEIGHT_IMAGE, true);
 	return bi;
@@ -189,7 +185,7 @@ public class Tool {
     }
 
     public static BufferedImage trim(BufferedImage source) {
-	return trim(source, 40, 40, 40, 40);
+	return trim(source, 200, 200, 200, 200);
     }
 
     public static BufferedImage trim(BufferedImage source, int indentTop,

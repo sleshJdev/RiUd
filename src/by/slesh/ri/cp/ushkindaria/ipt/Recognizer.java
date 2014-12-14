@@ -8,191 +8,178 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.imageio.ImageIO;
-
-import by.slesh.ri.cp.ushkindaria.ipt.segment.BugSegmentator;
-import by.slesh.ri.cp.ushkindaria.ipt.segment.Contour;
 
 /**
  * @author slesh
  *
  */
 public class Recognizer {
-    
-    public static void main(String[] args) {
-	try {
-	    BufferedImage image = ImageIO.read(new File("d:\\image5.png"));
-	    int h = image.getHeight();
-	    int w = image.getWidth();
-	    BufferedImage newi = new BufferedImage(w + 2, h + 1, image.getType());
-	    newi.getGraphics().drawImage(image, 1, 1, null);
-	    BugSegmentator bug = new BugSegmentator();
-	    bug.setFrom(new Point(w - 1,2));
-	    Contour contour = bug.segment(newi);
-	    contour.drawOnImage(newi);
-	    ImageIO.write(newi, "png", new File("d:\\www.png"));
-//	    int[] pixels = image.getRGB(0, 0, w, h, null, 0, w);
-//	    Point max = new Point();
-//	    int maxN = 0;
-//	    for (int y = 0; y < h; ++y) {
-//		for (int x = 0; x < w; ++x) {
-//		    if (image.getRGB(x, y) == Tool._0) {
-//			int x1 = 0;
-//			int y1 = 0;
-//			int x2 = 0;
-//			int y2 = 0;
-//			boolean bottom = false;
-//			for(int i = y; i < h; ++i){
-//			    if(image.getRGB(x, i) == Tool._1){
-//				y2 = y;
-//				bottom = true;
-//				break;
-//			    }
-//			}
-//			boolean top = false;
-//			for(int i = y; i >= 0; --i){
-//			    if(image.getRGB(x, i) == Tool._1){
-//				y1 = i;
-//				top = true;
-//				break;
-//			    }
-//			}
-//			boolean right = false;
-//			for(int i = x; i < w; ++i){
-//			    if(image.getRGB(i, y) == Tool._1){
-//				x2 = i;
-//				right = true;
-//				break;
-//			    }
-//			}
-//			boolean left = false;
-//			for(int i = x; i >= 0; --i){
-//			    if(image.getRGB(i, y) == Tool._1){
-//				x1 = i;
-//				left = true;
-//				break;
-//			    }
-//			}
-//			if(top&&bottom&&left&&right){
-////			    image.setRGB(x, y, Color.GREEN.getRGB());
-//			    BugSegmentator bug = new BugSegmentator();
-//			    bug.setFrom(new Point(x,y));
-//			    Contour contour = bug.segment(image);
-//			    contour.drawOnImage(image);
-//			    ImageIO.write(image, "png", new File("d:\\www.png"));
-//			    y = h;
-//			    x = w;
-//			    if(contour.isClosed() &&
-//				    contour.getMinX() >= x1 &&
-//				    contour.getMaxX() <= x2 &&
-//				    contour.getMinY() >= y1 &&
-//				    contour.getMaxY() <= y2){
-//				contour.drawOnImage(image);
-//			    }
-//			}
-//		    }
-//		}
-//	    }
-//	    ImageIO.write(image, "png", new File("d:\\www.png"));
-	} catch (IOException e) {
-	    
-	}
-    }
-    
-    static int check = 0;
-    static int num = 0;
-    
-    private static void mark(BufferedImage im, int x, int y, int prevX, int prevY) {
-	if (++check > 15) {
-	    if (im.getRGB(prevX, prevY) == Color.RED.getRGB()
-		    && im.getRGB(x, y) == Color.GREEN.getRGB()) return;
-	}
-	for (int i = y - 1; i < y + 1; ++i) {
-	    for (int j = x - 1; j < x + 1; ++j) {
-		if(i == y && j == x) continue;
-		if(i < 0 || i >= im.getHeight() || j < 0 || j >= im.getWidth()) continue;
-		if (im.getRGB(j, i) == Tool._1) {
-		    mark(im, j, i, x, y);
-		}
-	    }
-	}
-    }
-    
     private static double[][] mPatterns = {
-	    { 0.16603508771929826, 0.06792158458825126, 0.04617052681699146, 0.0863737822558775, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,      0 },// 0 
-	    { 0.05022910216718267, 0.3018575851393189, 0.4440634949632027, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0,                       1 },// 1 
-	    { 0.10878010878010878, 0.08983131563776725, 0.05726934415929632, 0.09657009657009658, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,     2 },// 2 
-	    { 0.03076923076923077, 0.09743589743589744, 0.038461538461538464, 0.07692307692307693, 1, 1, 0, 0, 0, 0, 1, 0, 0,                      3 },// 3 
-	    { 0.08, 0.08, 0.0725, 0.0325, 1, 0, 0, 1, 0, 0, 0, 0, 1,                                                                               4 },// 4
-	    { 0.05263157894736842, 0.05263157894736842, 0.038011695906432746, 0.07894736842105263, 0, 0, 1, 0, 0, 0, 1, 0, 0,                      5 },// 5 
-	    { 0.11153376537991921, 0.04835528408729401, 0.07434343434343434, 0.2143997638503133, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,      6},// 6
-	    { 0.010432190760059613, 0.02533532041728763, 0.01639344262295082, 0.0067064083457526085, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,  7 },// 
-	    { 0.10065691883873702, 0.09018859927950837, 0.08515702479338842, 0.18014712560167107, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,     8 },// 8 
-	    { 0.10415887966908376, 0.08552635280745881, 0.02427540713254999, 0.20398907862464713, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,     9 } // 9 
-    };			
+	    { 0.007371007371007371, 0.02375102375102375, 0.02375102375102375, 0.013923013923013924, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
+	    { 0.02304147465437788, 0.021889400921658985, 0.027649769585253458, 0.018433179723502304, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
+	    { 0.014729950900163666, 0.015275504637206765, 0.01800327332242226, 0.01691216584833606, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,  	 0 },// 0
+	    { 0.008064516129032258, 0.024193548387096774, 0.025985663082437275, 0.015232974910394265, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
+	    { 0.01818181818181818, 0.018787878787878787, 0.01818181818181818, 0.020606060606060607, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
+	    { 0.019157088122605363, 0.02375478927203065, 0.02375478927203065, 0.017624521072796936,  	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
+	    	    	
+	    { 0.003205128205128205, 0.019230769230769232, 0.017628205128205128, 0.0,  			0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,  	0.0,	1 },// 1	    
+	    { 0.004273504273504274, 0.03205128205128205,  0.038461538461538464, 0.0, 			0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0,	1 },// 1	    
+	    { 0.0, 		    0.030107526881720432, 0.030107526881720432, 0.002150537634408602, 	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	1 },// 1	    
+	    { 0.002699055330634278, 0.033738191632928474, 0.021592442645074223, 0.004048582995951417,   0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	1 },// 1	    
+	    { 0.008, 		    0.036,                0.048,                0.0, 			0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	1 },// 1	    
+	    
+	    { 0.012711864406779662, 0.017890772128060263, 0.01694915254237288, 0.011299435028248588, 	0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,    2 },// 2
+	    { 0.008868243243243243, 0.016047297297297296, 0.016891891891891893, 0.009712837837837838, 	1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,    2 },// 2
+	    
+	    { 0.0014347202295552368, 0.024390243902439025, 0.009086561453849833, 0.01482544237207078, 	0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 	0.0,         3 },// 3
+	    { 0.002649708532061473, 0.024377318494965553, 0.013248542660307366, 0.018018018018018018, 	0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 	0.0,         3 },// 3
+	    { 0.010835913312693499, 0.010061919504643963, 0.011222910216718266, 0.016640866873065017, 	1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,         3 },// 3
+	    
+	    { 0.014627659574468085, 0.014627659574468085, 0.009308510638297872, 0.017287234042553192, 	1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,        4 },// 4
+	    { 0.009129640900791236, 0.004564820450395618, 0.009738283627510651, 0.013694461351186854, 	0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,        4 },// 4
+	    
+	    { 0.008479067302596715, 0.013248542660307366, 0.01483836777954425, 0.0042395336512983575, 	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0,        5},// 5
+	    { 0.027412280701754384, 0.01864035087719298, 0.003289473684210526, 0.01864035087719298,   	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,        5},// 5
+	    { 0.02631578947368421, 0.018947368421052633, 0.011578947368421053, 0.017894736842105262,  	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0,        5},// 5
+	    { 0.022519352568613652, 0.01618578465869106, 0.0063335679099225895, 0.019000703729767768, 	0.0, 0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 1.0, 0.0, 	0.0,        5},// 5
+	    
+	    { 0.014945652173913044, 0.0, 		  0.02717391304347826, 0.02377717391304348,   	0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 	1.0,        6 },// 6
+	    { 0.010598834128245893, 0.013248542660307366, 0.02278749337572867, 0.0042395336512983575, 	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 	1.0,        6 },// 6
+	    
+	    { 0.012195121951219513, 0.010365853658536586, 0.007317073170731708, 0.023170731707317073, 	1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 	0.0,       7 },//7
+	    { 0.011486486486486487, 0.011486486486486487, 0.008783783783783784, 0.024324324324324326, 	1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 	0.0,       7 },//7
+	    { 0.013477088948787063, 0.013926325247079964, 0.0035938903863432167, 0.01931716082659479, 	1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 2.0, 	0.0,       7 },//7
+	    { 0.004597701149425287, 0.01264367816091954, 0.020114942528735632, 0.008045977011494253, 	0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 0.0, 	0.0,        7 },//7
+	    
+	    { 0.018823529411764704, 0.023529411764705882, 0.018823529411764704, 0.01647058823529412, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 	2.0,        8 },// 8
+	    { 0.018823529411764704, 0.023529411764705882, 0.018823529411764704, 0.01647058823529412, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 	2.0,        8 },// 8
+	    
+	    { 0.017825311942959002, 0.0196078431372549, 0.014854426619132501, 0.020202020202020204, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	1.0,        9 }, // 9
+	    { 0.018880208333333332, 0.020833333333333332, 0.020182291666666668, 0.016276041666666668, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	1.0,        9 } // 9
+    };
 
+    private static int mQuantityEtalons = mPatterns.length;
+    private static int mQuantitySigns = 14;
     private static double[] mNormFactors;
-
+    
+    public static void main(String[] args){
+	double[][] m = {
+		{0.5, 3},
+		{0.1, 1},
+		{0.8, 0},
+		{0.3, 9},
+	};
+	bubblesort(m);
+	for (double[] ds : m) {
+	    System.out.println(Arrays.toString(ds));
+        }
+    }
+    
     static {
 	normMatrix();
-	for (int k = 0; k < mPatterns.length; ++k) {
-	    for(int a = 0; a < mPatterns[k].length; ++a){
-		System.out.print(mPatterns[k][a]+"   ");
-	    }
-	    System.out.println("-------------");
-	}
     }
-
+    
     private static final void normMatrix() {
-	int h = mPatterns.length;// height
-	int w = mPatterns[0].length - 1;// width
-	mNormFactors = new double[w];
-	for (int k = 0; k < w; ++k) {
+	mNormFactors = new double[mQuantitySigns];
+	for (int k = 0; k < mQuantitySigns; ++k) {
 	    mNormFactors[k] = mPatterns[0][k];
 	}
-	for (int j = 0; j < w; ++j) {
-	    for (int i = 0; i < h; ++i) {
+	for (int j = 0; j < mQuantitySigns; ++j) {
+	    for (int i = 0; i < mQuantityEtalons; ++i) {
 		if (mPatterns[i][j] > mNormFactors[j]) {
 		    mNormFactors[j] = mPatterns[i][j];
 		}
 	    }
 	}
-	for (int j = 0; j < w; ++j) {
-	    for (int i = 0; i < h; ++i) {
-		if(mNormFactors[j] == 0) continue;
+	for (int j = 0; j < mQuantitySigns; ++j) {
+	    for (int i = 0; i < mQuantityEtalons; ++i) {
+		if (mNormFactors[j] == 0) continue;
 		mPatterns[i][j] /= mNormFactors[j];
 	    }
 	}
     }
 
-    private static void normvector(double[] vector) {
-	for (int k = 0; k < vector.length; ++k) {
-	    if(mNormFactors[k] == 0) continue;
+    private static double[] normVector(double[] vector) {
+	for (int k = 0; k < mQuantitySigns; ++k) {
+	    if (mNormFactors[k] == 0.0) continue;
 	    vector[k] /= mNormFactors[k];
 	}
+	return vector;
     }
-
+    
     public static BufferedImage[] recognize(BufferedImage[] digits) {
 	BufferedImage[] result = new BufferedImage[digits.length];
 	for (int k = 0; k < digits.length; ++k) {
+	    System.out
+		    .println("------------------------------------------------------");
 	    double[] a = defineSigns(digits[k]);
-	    normvector(a);
-	    System.out.println("norm=" + Arrays.toString(a));
-	    double[] d = countDistances(a);
-	    int digit = recognize(d);
-	    System.out.println("digit=" + digit);
+	    a = normVector(a);
+	    int digit = 0;
+	    ContourWorker cw = new ContourWorker(digits[k]);
+	    Point[] centers = cw.getCentersOfContours();
+	    if (centers.length == 2) {
+		digit = 8;
+	    } else if (centers.length == 1) {
+		int h = digits[k].getHeight();
+		int q = countSingletons(digits[k], null);
+		if (centers[0].y < h / 2 && q == 1) {
+		    digit = 9;
+		} else if (centers[0].y >= h / 2 && q == 1) {
+		    digit = 6;
+		} else if (q == 0) {
+		    digit = 0;
+		}
+	    } else {
+		System.out.println("norm=" + Arrays.toString(a));
+		double[][] d = countDistances(a);
+		digit = recognize(d);
+	    }
+	    System.out.println("digit==========" + digit);
 	    result[k] = createDigit(digit, digits[k]);
-	    System.out.println("----------------------");
+	    System.out
+		    .println("-------------------------------------------------");
 	}
 	return result;
     }
 
+    private static void swap(double[][] arr, int i, int j) {
+	double[] row = arr[i];
+	arr[i] = arr[j];
+	arr[i] = arr[j];
+	arr[j] = row;
+    }
+
+    private static void bubblesort(double[][] d) {
+	for (int i = d.length - 1; i >= 0; i--) {
+	    for (int j = 0; j < i; j++) {
+		if (d[j][0] > d[j + 1][0]) swap(d, j, j + 1);
+	    }
+	}
+    }
+    
+    
+    private static int recognize(double[][] d) {
+	bubblesort(d);
+	int[] quantities = new int[10];
+	for (int k = 0; k < 5; ++k) {
+	    ++quantities[(int)d[k][1]];
+	}
+//	int max = quantities[0];
+//	int digit = 0;
+//	for(int k = 0; k < quantities.length; ++k){
+//	    if(quantities[k] > max) {
+//		max = quantities[k];
+//		digit = k;
+//	    }
+//	}
+	int digit = (int)d[0][1];
+	System.out.println("================"+Arrays.toString(quantities));
+	return digit;
+    }
+    
     private static final int countSingletons(BufferedImage digit,
 	    List<Point> list) {
 	int h = digit.getHeight();
@@ -212,7 +199,8 @@ public class Recognizer {
 	return quantity;
     }
 
-    private static int countNeighborsForPixel(int[] pixels, int offset, int x, int y) {
+    private static int countNeighborsForPixel(int[] pixels, int offset, int x,
+	    int y) {
 	int quantity = 0;
 	for (int i = y - 1; i <= y + 1; ++i) {
 	    for (int j = x - 1; j <= x + 1; ++j) {
@@ -226,7 +214,7 @@ public class Recognizer {
 	}
 	return quantity;
     }
-
+    
     private static final BufferedImage createDigit(int digit,
 	    BufferedImage original) {
 	int type = original.getType();
@@ -238,31 +226,20 @@ public class Recognizer {
 	return answer;
     }
 
-    private static int recognize(double[] d) {
-	double min = d[0];
-	int digit = 1;
-	for (int k = 0; k < d.length; ++k) {
-	    if (d[k] < min) {
-		min = d[k];
-		digit = k;
+    private static double[][] countDistances(double[] a) {
+	double[][] distances = new double[mQuantityEtalons][2];
+	for (int y = 0; y < mQuantityEtalons; ++y) {
+	    for (int x = 0; x < mQuantitySigns; ++x) {
+		distances[y][0] += Math.pow(a[x] - mPatterns[y][x], 2);
 	    }
-	}
-	return digit;
-    }
-
-    private static double[] countDistances(double[] a) {
-	double[] distances = new double[10];
-	for (int y = 0; y < 10; ++y) {
-	    for (int x = 0; x < a.length; ++x) {
-		distances[y] += Math.pow(a[x] - mPatterns[y][x], 2);
-	    }
-	    distances[y] = Math.sqrt(distances[y]);
+	    distances[y][0] = Math.sqrt(distances[y][0]);
+	    distances[y][1] = mPatterns[y][mQuantitySigns];
 	}
 	return distances;
     }
 
     private static double[] defineSigns(BufferedImage digit) {
-	double[] answer = new double[4+9];
+	double[] answer = new double[mQuantitySigns];
 	int h = digit.getHeight();
 	int w = digit.getWidth();
 	int[] pixels = digit.getRGB(0, 0, w, h, null, 0, w);
@@ -290,30 +267,30 @@ public class Recognizer {
 		pixels[y * w + x] = Color.YELLOW.getRGB();
 	    }
 
-	for (int k = 0; k < answer.length; ++k)
+	for (int k = 0; k < 4; ++k)
 	    answer[k] /= w * h;
 
 	List<Point> list = new ArrayList<Point>();
 	int n = countSingletons(digit, list);
 
-	int[] a = new int[9];
-
 	int dx = w / 3;
 	int dy = h / 3;
-//	System.out.println("dx=" + dx + " dy=" + dy);
 	for (Point p : list) {
 	    int i = p.y / dy;
 	    int j = p.x / dx;
-	    System.out.println("x=" + p.x + " y=" + p.y + " i=" + i + " j=" + j
-		    + " n=" + i * 3 + j);
 	    int k = i * 3 + j;
 	    if (k >= 9) k = 8;
 	    if (k < 0) k = 0;
 	    ++answer[4 + k];
 	}
-
-	System.out.println("total =" + n + "  " + Arrays.toString(answer));
-
+	
+	ContourWorker cw = new ContourWorker(digit);
+	cw.drawResultOn(digit);
+	
+	answer[13] = cw.getCentersOfContours().length;
+	
+	System.out.println("signs vector not norm =" + n + "  " + Arrays.toString(answer));
+	
 	return answer;
     }
 }

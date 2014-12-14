@@ -35,7 +35,7 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 	mTargetImageBox = new JLabel();
 	mAreaInterestImageBox = new JLabel();
 	mGroupNumberImageBox = new JLabel();
-
+	
 	mSourceImageBox.setHorizontalAlignment(JLabel.CENTER);
 	mTargetImageBox.setHorizontalAlignment(JLabel.CENTER);
 	mAreaInterestImageBox.setHorizontalAlignment(JLabel.CENTER);
@@ -74,8 +74,8 @@ public class ImageBoxesView extends JPanel implements ImageBoxesViewInterface {
 	});
 
 	JPanel panel11 = new JPanel(new GridLayout(1, 3, 5, 5));
-	panel11.add(mGroupNumberImageBox);
-	panel11.add(mGroupNumberSegmentedPanel);
+	panel11.add(new JScrollPane(mGroupNumberImageBox));
+	panel11.add(new JScrollPane(mGroupNumberSegmentedPanel));
 
 	JPanel panel12 = new JPanel(new GridLayout(2, 1));
 	panel12.add(new JScrollPane(mAreaInterestImageBox));

@@ -68,7 +68,7 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
 
 	mResetButton = createButton("Сбросить", ACTION_RESET, false);
 
-	mTrimButton = createButton("Обрезать края(40 пикселей)", ACTION_TRIM,
+	mTrimButton = createButton("Обрезать по краям края", ACTION_TRIM,
 	        false);
 
 	mExtractAreaInterestButton = createButton(
@@ -127,12 +127,12 @@ public class ControlPanelView extends JPanel implements ControlViewInterface {
 	panelTitle = new JPanel(new GridLayout(2, 1, 5, 5));
 	panelTitle.setBorder(BorderFactory.createTitledBorder("Обработка"));
 	panel = new JPanel(new GridLayout(1, 2, 5, 5));
-	panel.add(mErodeButton);
-	panel.add(mDilateButton);
+	panel.add(mHistogramSegmentButton);
+	panel.add(mTrimButton);
 	panelTitle.add(panel);
 	panel = new JPanel(new GridLayout(1, 2, 5, 5));
-	panel.add(mTrimButton);
-	panel.add(mHistogramSegmentButton);
+	panel.add(mErodeButton);
+	panel.add(mDilateButton);
 	panelTitle.add(panel);
 	add(panelTitle);
 	

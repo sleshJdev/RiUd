@@ -38,7 +38,7 @@ public class RelationSegmentator {
 		mCurrentDigit = new Digit(createColor());
 		mQuantityPixels = 0;
 		mark(index);
-		if (mQuantityPixels > 10) mDigits.add(mCurrentDigit);
+		if (mQuantityPixels > 20) mDigits.add(mCurrentDigit);
 	    }
 	}
 	BufferedImage[] digits = new BufferedImage[mDigits.size()];

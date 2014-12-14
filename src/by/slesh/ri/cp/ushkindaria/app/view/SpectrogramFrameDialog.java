@@ -12,11 +12,13 @@ import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import by.slesh.ri.cp.ushkindaria.ipt.Tool;
+
 public class SpectrogramFrameDialog extends JFrame {
     private final class Canvas extends JPanel {
 	private static final long serialVersionUID   = 3689561413497688099L;
 	private final int         PADDING_HORIZONTAL = 0;
-	private final int         PADDING_TOP        = 50;
+	private final int         PADDING_TOP        = 20;
 	private final int         PADDING_BOOTOM     = 40;
 	private final int         TEXT_HEIGHT        = 10;
 
@@ -27,42 +29,31 @@ public class SpectrogramFrameDialog extends JFrame {
 	@Override
 	public void paintComponent(Graphics g) {
 	    super.paintComponents(g);
-	    if (mBrightnessRepeats == null) {
+	    if (mPixelsDensity == null) {
 		return;
 	    }
 	    int lineBottomY = mHeight - PADDING_BOOTOM - TEXT_HEIGHT;
-	    int widthColumn = (int) Math.ceil(mWidth / 256) + 5;
 	    double factorY = getFactorY();
-	    double offsetByX = getOffsetByX(widthColumn);
 	    double x = PADDING_HORIZONTAL;
 	    g.setColor(Color.WHITE);
-	    for (int i = 0; i < mBrightnessRepeats.length; ++i) {
-		int value = mBrightnessRepeats[i];
+	    for (int i = 0; i < mPixelsDensity.length; ++i) {
+		int value = mPixelsDensity[i];
 		int height = (int) (value * factorY);
 		int y = lineBottomY - height;
-		g.fillRect((int) x, y, widthColumn, height);
-		x += widthColumn + offsetByX;
-		if (i % 15 == 0) {
+		g.fillRect((int) x, y, 1, height);
+		x += 1;
+		if (i % 50 == 0) {
 		    g.drawString(Integer.toString(i), (int) x, lineBottomY
 			    + TEXT_HEIGHT);
 		}
 	    }
-	    g.drawLine(0, lineBottomY, mWidth, lineBottomY);
-	    g.drawLine(PADDING_HORIZONTAL, 0, PADDING_HORIZONTAL, mHeight);
-	    g.drawLine((int) x, 0, (int) x, mHeight);
 	}
 
 	private double getFactorY() {
-	    int[] distances = mBrightnessRepeats.clone();
+	    int[] distances = mPixelsDensity.clone();
 	    Arrays.sort(distances);
 	    double max = distances[distances.length - 1];
 	    return (mHeight - PADDING_TOP - PADDING_TOP - TEXT_HEIGHT) / max;
-	}
-
-	private double getOffsetByX(int widthColumn) {
-	    double restSpace = mWidth - 2 * PADDING_HORIZONTAL - widthColumn
-		    * 256;
-	    return restSpace / 255;
 	}
     }
 
@@ -72,7 +63,7 @@ public class SpectrogramFrameDialog extends JFrame {
     private int                           mWidth           = 700;
 
     private static SpectrogramFrameDialog mInstance;
-    private int[]                         mBrightnessRepeats;
+    private int[]                         mPixelsDensity;
     private Canvas                        mCanvas;
 
     private SpectrogramFrameDialog() {
@@ -90,6 +81,19 @@ public class SpectrogramFrameDialog extends JFrame {
 
     public void setData(BufferedImage data) {
 
+	int h = data.getHeight();
+	int w = data.getWidth();
+	int[] pixels = data.getRGB(0, 0, w, h, null, 0, h);
+	mPixelsDensity = new int[w];
+	for (int y = 0; y < h; y++) {
+	    for (int x = 0; x < w; x++) {
+	        int index = w * y + x;
+	        if(pixels[index] == Tool._1){
+	            ++mPixelsDensity[x];
+	        }
+            }
+        }
+	setBounds(0, 0, w, h);
 	mCanvas.repaint();
     }
 
