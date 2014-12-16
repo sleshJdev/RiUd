@@ -33,7 +33,7 @@ public class RelationSegmentator {
 
     public BufferedImage[] segment() {
 	for (int x = 0; x < mWidth; ++x) {
-	    int index = mWidth * mHeight / 2 + x;
+	    int index = mWidth * (mHeight / 2 + 10) + x;
 	    if (mPixelData[index] == Tool._1) {
 		mCurrentDigit = new Digit(createColor());
 		mQuantityPixels = 0;

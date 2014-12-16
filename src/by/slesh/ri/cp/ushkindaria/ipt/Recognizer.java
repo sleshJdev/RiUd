@@ -17,6 +17,10 @@ import java.util.List;
  *
  */
 public class Recognizer {
+    private static class Info{
+	Point[] centers;
+	int quantityPoints;
+    }
     private static double[][] mPatterns = {
 	    { 0.007371007371007371, 0.02375102375102375, 0.02375102375102375, 0.013923013923013924, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
 	    { 0.02304147465437788, 0.021889400921658985, 0.027649769585253458, 0.018433179723502304, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
@@ -25,11 +29,12 @@ public class Recognizer {
 	    { 0.01818181818181818, 0.018787878787878787, 0.01818181818181818, 0.020606060606060607, 	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
 	    { 0.019157088122605363, 0.02375478927203065, 0.02375478927203065, 0.017624521072796936,  	0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,   1.0,      0 },// 0
 	    	    	
-	    { 0.003205128205128205, 0.019230769230769232, 0.017628205128205128, 0.0,  			0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,  	0.0,	1 },// 1	    
-	    { 0.004273504273504274, 0.03205128205128205,  0.038461538461538464, 0.0, 			0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0,	1 },// 1	    
-	    { 0.0, 		    0.030107526881720432, 0.030107526881720432, 0.002150537634408602, 	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	1 },// 1	    
-	    { 0.002699055330634278, 0.033738191632928474, 0.021592442645074223, 0.004048582995951417,   0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	1 },// 1	    
-	    { 0.008, 		    0.036,                0.048,                0.0, 			0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	1 },// 1	    
+	    { 0.003205128205128205, 0.019230769230769232, 0.017628205128205128, 0.0,  			0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,  	0.0,	 1 },// 1	    
+	    { 0.004273504273504274, 0.03205128205128205,  0.038461538461538464, 0.0, 			0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0,	 1 },// 1	    
+	    { 0.0, 		    0.030107526881720432, 0.030107526881720432, 0.002150537634408602, 	0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	 1 },// 1	    
+	    { 0.002699055330634278, 0.033738191632928474, 0.021592442645074223, 0.004048582995951417,   0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	 1 },// 1	    
+	    { 0.008, 		    0.036,                0.048,                0.0, 			0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	 1 },// 1	    
+	    { 0.010144927536231883, 0.017391304347826087, 0.013043478260869565, 0.002898550724637681, 	0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 	0.0, 	 1 },// 1	    
 	    
 	    { 0.012711864406779662, 0.017890772128060263, 0.01694915254237288, 0.011299435028248588, 	0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,    2 },// 2
 	    { 0.008868243243243243, 0.016047297297297296, 0.016891891891891893, 0.009712837837837838, 	1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 	0.0,    2 },// 2
@@ -64,19 +69,6 @@ public class Recognizer {
     private static int mQuantityEtalons = mPatterns.length;
     private static int mQuantitySigns = 14;
     private static double[] mNormFactors;
-    
-    public static void main(String[] args){
-	double[][] m = {
-		{0.5, 3},
-		{0.1, 1},
-		{0.8, 0},
-		{0.3, 9},
-	};
-	bubblesort(m);
-	for (double[] ds : m) {
-	    System.out.println(Arrays.toString(ds));
-        }
-    }
     
     static {
 	normMatrix();
@@ -115,21 +107,21 @@ public class Recognizer {
 	for (int k = 0; k < digits.length; ++k) {
 	    System.out
 		    .println("------------------------------------------------------");
-	    double[] a = defineSigns(digits[k]);
+	    Info info = new Info();
+	    double[] a = defineSigns(digits[k], info);
 	    a = normVector(a);
 	    int digit = 0;
-	    ContourWorker cw = new ContourWorker(digits[k]);
-	    Point[] centers = cw.getCentersOfContours();
+	    Point[] centers = info.centers;
 	    if (centers.length == 2) {
 		digit = 8;
 	    } else if (centers.length == 1) {
 		int h = digits[k].getHeight();
-		int q = countSingletons(digits[k], null);
-		if (centers[0].y < h / 2 && q == 1) {
+		int qPoits = info.quantityPoints;
+		if (centers[0].y < h / 2 && qPoits == 1) {
 		    digit = 9;
-		} else if (centers[0].y >= h / 2 && q == 1) {
+		} else if (centers[0].y >= h / 2 && qPoits == 1) {
 		    digit = 6;
-		} else if (q == 0) {
+		} else if (qPoits == 0) {
 		    digit = 0;
 		}
 	    } else {
@@ -238,7 +230,7 @@ public class Recognizer {
 	return distances;
     }
 
-    private static double[] defineSigns(BufferedImage digit) {
+    private static double[] defineSigns(BufferedImage digit, Info info) {
 	double[] answer = new double[mQuantitySigns];
 	int h = digit.getHeight();
 	int w = digit.getWidth();
@@ -273,6 +265,8 @@ public class Recognizer {
 	List<Point> list = new ArrayList<Point>();
 	int n = countSingletons(digit, list);
 
+	info.quantityPoints = n;
+	
 	int dx = w / 3;
 	int dy = h / 3;
 	for (Point p : list) {
@@ -287,7 +281,11 @@ public class Recognizer {
 	ContourWorker cw = new ContourWorker(digit);
 	cw.drawResultOn(digit);
 	
-	answer[13] = cw.getCentersOfContours().length;
+	Point[] centers = cw.getCentersOfContours();
+	
+	answer[13] = centers.length;
+	
+	info.centers = centers;
 	
 	System.out.println("signs vector not norm =" + n + "  " + Arrays.toString(answer));
 	
