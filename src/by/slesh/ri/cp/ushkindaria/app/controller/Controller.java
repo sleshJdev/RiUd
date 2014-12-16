@@ -144,6 +144,7 @@ public class Controller implements ActionListener {
 	case ControlViewInterface.ACTION_EXTRACT_AREA_INTEREST:
 	    mModel.extractAreaInterest();
 	    mImageBoxesView.updateAreaInterest(mModel.getTargetImage());
+	    G.sMainView.refresh();
 	    break;
 	case ControlViewInterface.ACTION_EXTRACT_GROUP_NUMBER:
 	    mModel.extractGroupNumber();
@@ -157,6 +158,7 @@ public class Controller implements ActionListener {
 	    break;
 	case ControlViewInterface.ACTION_RECOGNIZE_NUMBER:
 	    mImageBoxesView.updateRecognizeNumber(mModel.recognizeNumber());
+	    G.sMainView.refresh();
 	    break;
 	}
     }

@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
+import by.slesh.ri.cp.ushkindaria.app.G;
 import by.slesh.ri.cp.ushkindaria.app.controller.Controller;
 import by.slesh.ri.cp.ushkindaria.app.model.Model;
 
@@ -27,6 +28,8 @@ public class MainView extends JFrame {
 	setBounds((int) x, (int) y, WIDTH, HEIGHT);
 	setDefaultCloseOperation(EXIT_ON_CLOSE);
 	initGui();
+	
+	G.sMainView = this;
     }
 
     private void initGui() {
@@ -44,5 +47,9 @@ public class MainView extends JFrame {
 
 	Model model = new Model();
 	new Controller(controlPanelView, imageBoxesView, fileView, model);
+    }
+    
+    public void refresh() {
+	repaint();
     }
 }
