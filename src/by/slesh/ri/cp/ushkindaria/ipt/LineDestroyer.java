@@ -19,7 +19,7 @@ public class LineDestroyer {
 	int h = source.getHeight();
 	int w = source.getWidth();
 	int[] pixels = source.getRGB(0, 0, w, h, null, 0, w);
-	
+
 	for (int x = 0; x < w - d; ++x) {
 	    double quantity = 0;
 	    for (int k = x; k < x + d; ++k) {
@@ -63,7 +63,7 @@ public class LineDestroyer {
 		    }
 		}
 	    }
-	    if (quantity / (d * w) < density) {
+	    if (quantity / (d * w) > density) {
 		for (int i = y; i < y + d; ++i) {
 		    for (int x = 0; x < w; ++x) {
 			pixels[w * i + x] = Tool._0;
@@ -74,7 +74,7 @@ public class LineDestroyer {
 	source.setRGB(0, 0, w, h, pixels, 0, w);
 	return source;
     }
-    
+
     public static BufferedImage destroyHorizontal(BufferedImage source, int d,
 	    double density) {
 	int h = source.getHeight();

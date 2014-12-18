@@ -15,6 +15,7 @@ import javax.imageio.ImageIO;
 import by.slesh.ri.cp.ushkindaria.app.G;
 import by.slesh.ri.cp.ushkindaria.ipt.LineDestroyer;
 import by.slesh.ri.cp.ushkindaria.ipt.Recognizer;
+import by.slesh.ri.cp.ushkindaria.ipt.Resizer;
 import by.slesh.ri.cp.ushkindaria.ipt.Rotator;
 import by.slesh.ri.cp.ushkindaria.ipt.Skeletonizator;
 import by.slesh.ri.cp.ushkindaria.ipt.Tool;
@@ -28,6 +29,8 @@ import by.slesh.ri.cp.ushkindaria.ipt.segment.RelationSegmentator;
 import by.slesh.ri.cp.ushkindaria.ipt.segment.SimpleSkeletonizator;
 
 public class Model {
+    private int mTargetWidth = 2552;
+    private int mTargetHeight = 3510;
 
     private BufferedImage mSourceImage;
     private BufferedImage mTargetImage;
@@ -37,8 +40,22 @@ public class Model {
 	return mSourceImage;
     }
 
-    public void setSourceImage(BufferedImage sourceFrame) {
-	mSourceImage = sourceFrame;
+    public void setSourceImage(BufferedImage source) {
+	mSourceImage = source;
+	int h = mSourceImage.getHeight();
+	int w = mSourceImage.getWidth();
+	if (w < mTargetWidth)
+	    mSourceImage = Resizer.scaleUp(mSourceImage, mTargetWidth, h, true);
+	if (w > mTargetWidth)
+	    mSourceImage = Resizer
+	            .scaleLow(mSourceImage, mTargetWidth, h, true);
+	w = mTargetWidth;
+	if (h < mTargetHeight)
+	    mSourceImage = Resizer
+	            .scaleUp(mSourceImage, w, mTargetHeight, true);
+	if (w > mTargetHeight)
+	    mSourceImage = Resizer.scaleLow(mSourceImage, w, mTargetHeight,
+	            true);
     }
 
     public BufferedImage getTargetImage() {
@@ -51,9 +68,10 @@ public class Model {
 
     public void binarization() {
 	mTargetImage = Binarizator.binarization(mTargetImage);
-	mTargetImage = Rotator.rotate(mTargetImage);
 	mTargetImage = WizardMorph.clear(mTargetImage);
+	mTargetImage = Rotator.rotate(mTargetImage);
 	mTargetImage = Binarizator.binarization(mTargetImage);
+	mTargetImage = Tool.trim(mTargetImage, 50, 50, 50, 50);
     }
 
     public void skeletonization() {
@@ -63,7 +81,7 @@ public class Model {
 
     public void histogramSegment() {
 	HistogramSegmentator histogramSegmentator = new HistogramSegmentator();
-	histogramSegmentator.segment(mTargetImage, 20, 100, true);
+	histogramSegmentator.segment(mTargetImage, 15, 100, true);
 	xleft = histogramSegmentator.getLeftBorder();
 	xright = histogramSegmentator.getRightBorder();
 	ytop = histogramSegmentator.getTopBorder();
@@ -81,20 +99,30 @@ public class Model {
 	mTargetImage = morph.morph(mTargetImage);
     }
 
+    private boolean isGroupleft() {
+	int x = 850;
+	int y = yOLeter + WH + 75;
+	int w = 600;
+	int h = 50;
+	int q = countBlackPixels(mTargetImage.getSubimage(x, y, w, h));
+	return q < 500;
+    }
+
     private int yOLeter;
 
     public void extractAreaInterest() {
+	int w = mTargetImage.getWidth();
+
 	int y1 = yOLeter + WH + 10;
 	int y2 = 0;
 
-	int x1 = 0;
-	int x2 = mTargetImage.getWidth();
+	int x1 = 10;
+	int x2 = w;
 
 	Contour contour = null;
-	for (int y = yOLeter + WH + 5;; ++y) {
-	    if (mTargetImage.getRGB(x1 + WH + 1, y) == Tool._1) {
-		bugSegmentator.setFrom(new Point(x1 + WW, y));
-		contour = bugSegmentator.segment(mTargetImage);
+
+	for (int y = y1;; ++y) {
+	    if (mTargetImage.getRGB(x1, y) == Tool._1) {
 		y2 = y;
 		break;
 	    } else {
@@ -102,36 +130,83 @@ public class Model {
 	    }
 	}
 
-	contour.drawOnImage(mTargetImage);
-
-	mX = 0;
-	for (Point point : contour.getPath()) {
-	    if (point.x > mX) {
-		mX = point.x;
-	    }
-	}
-
 	Graphics g = mTargetImage.getGraphics();
-	g.setColor(Color.BLUE);
-	g.drawRect(mX, y1, x2 - mX, y2 - y1);
 
-	mY = contour.getMaxY();
+	if (isGroupleft()) {
+	    int xLeft = x1;
+	    int xRight = x1;
+	    int yTop = y1;
+	    int yLow = Integer.MIN_VALUE;
+	    int y0 = y2 + 10;
 
-	mTargetImage = Tool.cut(mTargetImage, mX + 180, y1,
-	        mTargetImage.getWidth(), mY);
+	    for (int k = 0; k < 10; ++k) {
+		xLeft = xRight;
+		for (int x = xLeft; x < w; ++x) {
+		    if (mTargetImage.getRGB(x, y0) == Tool._1) {
+			xLeft = x - 1;
+			break;
+		    }
+		}
+		bugSegmentator.setFrom(new Point(xLeft, y0));
+		contour = bugSegmentator.segment(mTargetImage);
+		contour.drawOnImage(mTargetImage);
+		xRight = contour.getMaxX();
+		if (contour.getMaxY() > yLow) yLow = contour.getMaxY();
+		int counter = 0;
+		for (int x = xRight; x < w; ++x) {
+		    if (mTargetImage.getRGB(x, y0) == Tool._0) ++counter;
+		    else break;
+		}
+		if (counter > 20) break;
+	    }
+
+	    for (int x = xRight; x < w; ++x) {
+		boolean isLowBotderFound = false;
+		for (int y = y0; y <= yLow; ++y)
+		    if (mTargetImage.getRGB(x, y) == Tool._1) {
+			isLowBotderFound = true;
+			yLow = y;
+			break;
+		    }
+
+		if (isLowBotderFound) {
+		    xLeft = x + 1;
+		    break;
+		}
+	    }
+
+	    yLow -= 5;
+	    yTop = yLow - 70;
+
+	    g.setColor(Color.BLUE);
+	    g.drawRect(xLeft, yTop, w, yLow - yTop);
+
+	    mTargetImage = Tool.cut(mTargetImage, xLeft, yTop, w, yLow);
+	} else {
+	    bugSegmentator.setFrom(new Point(x1, y2));
+	    contour = bugSegmentator.segment(mTargetImage);
+	    contour.drawOnImage(mTargetImage);
+
+	    x1 = contour.getMaxX();
+	    y2 = contour.getMaxY();
+
+	    y2 -= 5;
+
+	    g.setColor(Color.BLUE);
+	    g.drawRect(x1, y1, x2 - x1, y2 - y1);
+	    mTargetImage = Tool.cut(mTargetImage, x1 + 180, y1, x2, y2);
+	}
     }
-
-    private int mY;
-    private int mX;
 
     public void extractGroupNumber() {
 	int old = Binarizator.sPercents;
 	Binarizator.sPercents = 20;
 	mTargetImage = Binarizator.binarization(mTargetImage);
-	mTargetImage = WizardMorph.dilate(mTargetImage);
+	// mTargetImage = WizardMorph.erode(mTargetImage);
+	// mTargetImage = WizardMorph.dilate(mTargetImage);
 	Binarizator.sPercents = old;
 	mTargetImage = Tool.centrain(mTargetImage);
-	mTargetImage = LineDestroyer.destroyHorizontal(mTargetImage, 1, 0.5);
+	mTargetImage = LineDestroyer.destroyHorizontal(mTargetImage, 1, 0.4);
 	mTargetImage = LineDestroyer.destroyVertical(mTargetImage, 1, 0.7);
 	mTargetImage = Tool.centrain(mTargetImage);
     }
@@ -144,7 +219,7 @@ public class Model {
 	mDigits = rs.segment();
 	return mDigits;
     }
-    
+
     public BufferedImage[] skeletonizationSegmentDigits() {
 	BufferedImage[] digits = new BufferedImage[mDigits.length];
 	for (int t = 0; t < mDigits.length; ++t) {
@@ -212,7 +287,7 @@ public class Model {
 
 	Graphics g = mTargetImage.getGraphics();
 	g.setColor(Color.BLUE);
-	for (int y = 0; y < h - WH; ++y) {
+	for (int y = WH; y < h - 2 * WH; ++y) {
 	    for (int x = 0; x < WW; ++x) {
 		if (pixels[w * y + x] == Tool._1) {
 		    BufferedImage i = mTargetImage.getSubimage(0, y, WW, WH);
@@ -220,6 +295,7 @@ public class Model {
 		    if (np / WW / WH > 0.2) {
 			int n = countMomentOfInertia(i);
 			list.add(new Point(n, y));
+			System.out.println(new Point(n, y));
 			y += WH;
 		    }
 		}
@@ -238,10 +314,6 @@ public class Model {
 	list.toArray(array);
 
 	yOLeter = array[0].y;
-	g.setColor(Color.RED);
-	for (int k = 0; k < G.QUANTITY_NEURONS; ++k) {
-	    g.drawRect(0, array[k].y, WW, WH);
-	}
 
 	boolean isO = true;
 	for (int x = WW / 3; x < 2 * WW / 3; ++x) {
@@ -256,16 +328,31 @@ public class Model {
 	}
 
 	isO = true;
+	int counter = 0;
 	for (int x = WW / 3; x < 2 * WW / 3; ++x) {
 	    for (int y = WH / 3; y < 2 * WH / 3; ++y) {
 		if (mTargetImage.getRGB(x, array[1].y + y) == Tool._1) {
-		    isO = false;
+		    ++counter;
 		}
+		if (counter > 10) isO = false;
 	    }
 	}
 	if (isO) {
 	    yOLeter = array[1].y;
 	}
+
+	g.setColor(Color.RED);
+	for (int k = 0; k < G.QUANTITY_NEURONS; ++k) {
+	    if (yOLeter == array[k].y) {
+		g.setColor(Color.BLUE);
+		g.fillRect(0, array[k].y - 20, WW, 15);
+	    } else {
+		g.setColor(Color.RED);
+		g.drawRect(0, array[k].y, WW, WH);
+	    }
+	}
+
+	save(mTargetImage);
     }
 
     private static final int WH = 40;

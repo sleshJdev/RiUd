@@ -13,7 +13,7 @@ import by.slesh.ri.cp.ushkindaria.app.view.MainView;
 public class G {
     public static MainView sMainView;
     
-    public static int INIT_BIN_PERCENT = 10;
+    public static int INIT_BIN_PERCENT = 7;
     public static int INIT_SEGMENT_THRESHOLD = 250;
 
     public static final String[] NAMES_FOR_FINDER = { "O", "1", "2", "3", "4" };
